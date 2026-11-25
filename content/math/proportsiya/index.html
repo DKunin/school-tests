@@ -1,0 +1,646 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; base-uri 'none'; form-action 'none'">
+<meta name="description" content="Короткий интерактивный урок о понятии пропорции и её основном свойстве.">
+<title>Пропорция держит масштаб</title>
+<style>
+:root {
+  --paper: #f8f7f1;
+  --ink: #192d29;
+  --muted: #4d625a;
+  --line: #d6ddd2;
+  --white: #fffefa;
+  --mint: #e8f2e8;
+  --green: #24493a;
+  --lime: #d9ec90;
+  --outer: #9b4329;
+  --outer-bg: #fbece3;
+  --middle: #5b4396;
+  --middle-bg: #eee8fa;
+  --map: #14624f;
+  --road: #ad4325;
+  --radius: 24px;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background: var(--paper);
+  font: 17px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+h1, h2, h3, p, figure { margin: 0; }
+a { color: inherit; }
+button, input { font: inherit; }
+button, input[type="range"] { cursor: pointer; }
+button { color: inherit; }
+:focus-visible { outline: 3px solid var(--middle); outline-offset: 4px; }
+[hidden] { display: none !important; }
+.wrap { width: min(1120px, calc(100% - 48px)); margin-inline: auto; }
+.top { border-bottom: 1px solid var(--line); background: var(--paper); }
+.top .wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 67px;
+  gap: 16px;
+}
+.home {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-weight: 750;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.home-mark {
+  display: inline-grid;
+  place-items: center;
+  width: 33px;
+  height: 33px;
+  border-radius: 10px;
+  background: var(--lime);
+  color: var(--green);
+}
+nav { display: flex; flex-wrap: wrap; gap: 12px 24px; font-size: .88rem; }
+nav a { color: var(--muted); text-decoration: none; }
+nav a:hover { color: var(--ink); text-decoration: underline; text-underline-offset: 4px; }
+.hero { padding: clamp(38px, 6vw, 78px) 0 clamp(28px, 4vw, 45px); }
+.hero h1 {
+  max-width: 1000px;
+  font-size: clamp(2.25rem, 5.5vw, 4.5rem);
+  line-height: .99;
+  letter-spacing: -.072em;
+  font-weight: 850;
+  text-wrap: balance;
+}
+.hero p {
+  max-width: 730px;
+  margin-top: 22px;
+  font-size: clamp(1.05rem, 2.5vw, 1.28rem);
+  color: var(--muted);
+}
+.lesson { padding-bottom: clamp(44px, 7vw, 86px); scroll-margin-top: 20px; }
+.lesson-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 16px; }
+.step {
+  flex: none;
+  font-size: .8rem;
+  color: var(--green);
+  font-weight: 800;
+  background: var(--lime);
+  border-radius: 999px;
+  padding: 3px 9px;
+  white-space: nowrap;
+}
+h2 {
+  font-size: clamp(1.45rem, 3vw, 2.25rem);
+  letter-spacing: -.045em;
+  line-height: 1.1;
+  font-weight: 800;
+  text-wrap: balance;
+}
+h3 { font-size: 1.1rem; line-height: 1.25; letter-spacing: -.02em; text-wrap: balance; }
+.lead { color: var(--muted); max-width: 760px; margin-bottom: 20px; }
+.board {
+  display: grid;
+  grid-template-columns: minmax(0, 1.18fr) minmax(0, .82fr);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--white);
+}
+.play { min-width: 0; background: var(--mint); padding: clamp(16px, 3vw, 32px); }
+.control-head { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; }
+.control-head label { font-weight: 780; }
+.control-head output {
+  color: var(--road);
+  font-size: 1.7rem;
+  line-height: 1;
+  font-weight: 850;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.map-visual { margin-block: 14px 10px; border-radius: 16px; overflow: hidden; background: #f3f8ed; }
+.map-visual svg { display: block; width: 100%; height: auto; }
+.range { display: block; width: 100%; height: 38px; margin: 0; accent-color: var(--green); }
+.range-limits { display: flex; justify-content: space-between; color: var(--muted); font-size: .82rem; font-weight: 650; }
+.preset-row { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 12px; }
+.pill, .option {
+  border: 1px solid var(--line);
+  background: var(--white);
+}
+.pill { min-height: 44px; padding: 6px 13px; border-radius: 999px; font-size: .88rem; font-weight: 720; }
+.pill:hover, .option:hover { border-color: var(--green); }
+.pill[aria-pressed="true"] { color: white; background: var(--green); border-color: var(--green); }
+.guide { min-width: 0; padding: clamp(20px, 3vw, 34px); display: grid; align-content: center; gap: 15px; }
+.guide > p { color: var(--muted); }
+.definition { border-left: 3px solid #9bb756; padding-left: 13px; }
+.ratio-line {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .45em;
+  font-size: clamp(1.12rem, 2.5vw, 1.5rem);
+  font-weight: 790;
+  font-variant-numeric: tabular-nums;
+}
+.fraction { display: inline-grid; min-width: 44px; text-align: center; line-height: 1.2; }
+.fraction > span { padding-inline: .28em; }
+.fraction > span:first-child { border-bottom: 1.5px solid currentColor; padding-bottom: .14em; }
+.fraction > span:last-child { padding-top: .14em; }
+.ratio-value { color: var(--muted); font-size: .91rem; font-weight: 650; }
+.model-status {
+  padding: 11px 13px;
+  border-radius: 12px;
+  font-weight: 750;
+  background: var(--outer-bg);
+  color: #78351f;
+}
+.model-status[data-match="true"] { background: #dcebd9; color: var(--green); }
+.terms-card {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--white);
+  overflow: hidden;
+}
+.terms-intro { padding: clamp(20px, 3vw, 30px); border-bottom: 1px solid var(--line); }
+.terms {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .34em;
+  margin-bottom: 18px;
+  font-size: clamp(1.65rem, 5vw, 3rem);
+  line-height: 1;
+  font-weight: 850;
+  font-variant-numeric: tabular-nums;
+}
+.term {
+  display: inline-grid;
+  place-items: center;
+  width: 1.5em;
+  height: 1.5em;
+  border-radius: 14px;
+}
+.term.outer { color: var(--outer); background: var(--outer-bg); }
+.term.middle { color: var(--middle); background: var(--middle-bg); }
+.legend { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 20px; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 7px; }
+.legend i { width: 10px; height: 10px; border-radius: 50%; background: currentColor; }
+.outer-key { color: var(--outer); }
+.middle-key { color: var(--middle); }
+.property {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 24px;
+  align-items: center;
+  padding: clamp(20px, 4vw, 36px);
+  background: var(--mint);
+}
+.property-copy p { margin-top: 10px; color: var(--muted); }
+.products { display: grid; gap: 13px; }
+.product-row { display: grid; grid-template-columns: 112px minmax(0, 1fr) 36px; align-items: center; gap: 10px; }
+.product-label { font-weight: 780; font-variant-numeric: tabular-nums; }
+.meter { height: 14px; border-radius: 999px; background: #d5ddd1; overflow: hidden; }
+.meter-fill { height: 100%; border-radius: inherit; transition: width 180ms ease; }
+.meter-fill.outer { background: var(--outer); }
+.meter-fill.middle { background: var(--middle); }
+.product-number { text-align: right; font-weight: 850; font-variant-numeric: tabular-nums; }
+.property-result { margin-top: 3px; font-weight: 760; }
+.example {
+  display: grid;
+  grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--white);
+}
+.example-map { min-width: 0; padding: clamp(22px, 4vw, 38px); background: var(--mint); display: grid; align-content: center; gap: 18px; }
+.route { display: grid; grid-template-columns: 62px minmax(0, 1fr) auto; align-items: center; gap: 11px; }
+.route strong { font-size: .93rem; }
+.route-line { height: 7px; border-radius: 999px; background: var(--map); position: relative; }
+.route-line::after { content: ""; position: absolute; right: -1px; top: 50%; width: 13px; height: 13px; border: 3px solid var(--map); border-radius: 50%; background: var(--mint); transform: translateY(-50%); }
+.route-line.long { background: var(--road); }
+.route-line.long::after { border-color: var(--road); }
+.route output { font-weight: 820; font-variant-numeric: tabular-nums; }
+.solution { padding: clamp(22px, 4vw, 38px); }
+.solution > p { margin-top: 10px; color: var(--muted); }
+.solution-steps { display: grid; gap: 10px; margin-top: 18px; }
+.solution-step { display: flex; align-items: baseline; gap: 10px; }
+.solution-step b {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--lime);
+  color: var(--green);
+  font-size: .86rem;
+}
+.solution-step span { font-weight: 720; font-variant-numeric: tabular-nums; }
+.quiz {
+  border-radius: var(--radius);
+  background: #e7efe2;
+  padding: clamp(17px, 4vw, 36px);
+  border: 1px solid #c9d9c7;
+}
+.quiz-meta { color: var(--muted); font-size: .89rem; font-weight: 740; margin-bottom: 8px; }
+.quiz h3 { font-size: clamp(1.15rem, 2.5vw, 1.5rem); }
+.options { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-block: 18px 12px; }
+.option { min-height: 52px; border-radius: 12px; padding: 9px 11px; font-weight: 730; }
+.option[data-result="right"] { color: white; background: var(--green); border-color: var(--green); }
+.option[data-result="wrong"] { border-color: var(--outer); background: var(--outer-bg); }
+.option:disabled { cursor: default; opacity: 1; }
+.feedback { min-height: 1.55em; font-weight: 680; }
+.feedback[data-result="wrong"] { color: #78351f; }
+.next {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 44px;
+  margin-top: 13px;
+  padding: 8px 17px;
+  border: 1px solid var(--green);
+  border-radius: 999px;
+  background: var(--green);
+  color: white;
+  font-weight: 750;
+}
+.next:hover { background: #17362a; }
+.next:disabled { border-color: #bacbbb; background: #d8e5d6; color: var(--muted); cursor: default; }
+footer { border-top: 1px solid var(--line); padding-block: 18px 27px; color: var(--muted); font-size: .9rem; }
+footer a { text-underline-offset: 4px; }
+@media (max-width: 760px) {
+  .wrap { width: calc(100% - 30px); }
+  .top .wrap { align-items: flex-start; flex-direction: column; gap: 9px; padding-block: 10px 12px; }
+  nav { gap: 6px 19px; }
+  .board, .property, .example { grid-template-columns: minmax(0, 1fr); }
+  .property { gap: 18px; }
+}
+@media (max-width: 480px) {
+  .hero h1 { max-width: 350px; }
+  .lesson-head { align-items: flex-start; }
+  .control-head { align-items: flex-start; }
+  .product-row { grid-template-columns: 94px minmax(0, 1fr) 30px; gap: 7px; font-size: .9rem; }
+  .options { grid-template-columns: minmax(0, 1fr); }
+  .route { grid-template-columns: 52px minmax(0, 1fr) auto; gap: 8px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .meter-fill { transition: none; }
+}
+</style>
+</head>
+<body id="top">
+<header class="top">
+  <div class="wrap">
+    <a class="home" href="../../"><span class="home-mark" aria-hidden="true">◢</span> Школьные темы</a>
+    <nav aria-label="Разделы урока">
+      <a href="#model">Равные отношения</a>
+      <a href="#property">Проверка</a>
+      <a href="#example">Пример</a>
+      <a href="#quiz">Самопроверка</a>
+    </nav>
+  </div>
+</header>
+<main class="wrap">
+  <div class="hero">
+    <h1>Пропорция<br>держит масштаб</h1>
+    <p>Настрой расстояние на карте, сравни два отношения и увидь, почему проверка крест-накрест работает без деления.</p>
+  </div>
+
+  <section class="lesson" id="model" aria-labelledby="model-heading">
+    <div class="lesson-head"><span class="step">Шаг 1</span><h2 id="model-heading">Когда получается пропорция?</h2></div>
+    <p class="lead">На первой карте 2 см соответствуют 6 км. На второй — 4 см и пока неизвестное расстояние. Подбери его так, чтобы масштаб не изменился.</p>
+    <div class="board">
+      <div class="play">
+        <div class="control-head">
+          <label for="distance">Расстояние на местности</label>
+          <output id="distance-value" for="distance">10 км</output>
+        </div>
+        <figure class="map-visual" id="map-visual"></figure>
+        <input class="range" id="distance" type="range" min="8" max="16" step="1" value="10" aria-describedby="distance-hint">
+        <div class="range-limits" id="distance-hint"><span>8 км</span><span>16 км</span></div>
+        <div class="preset-row" role="group" aria-label="Быстрый выбор расстояния">
+          <button class="pill preset" type="button" data-distance="10" aria-pressed="true">10 км</button>
+          <button class="pill preset" type="button" data-distance="12" aria-pressed="false">12 км</button>
+          <button class="pill preset" type="button" data-distance="14" aria-pressed="false">14 км</button>
+        </div>
+      </div>
+      <div class="guide">
+        <h3>Сравниваем два масштаба</h3>
+        <div class="ratio-line" id="ratio-line" role="img"></div>
+        <p class="ratio-value" id="ratio-values"></p>
+        <p class="model-status" id="model-status" role="status"></p>
+        <p class="definition"><strong>Пропорция</strong> — истинное равенство двух отношений. В записи учебника все четыре числа ненулевые.</p>
+        <p>Если обе дроби дают одно и то же число, масштаб сохранён — перед нами пропорция.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="lesson" id="property" aria-labelledby="property-heading">
+    <div class="lesson-head"><span class="step">Шаг 2</span><h2 id="property-heading">Как проверить без деления?</h2></div>
+    <p class="lead">В строчной записи два числа стоят по краям, а два — посередине. Перемножь каждую пару.</p>
+    <div class="terms-card">
+      <div class="terms-intro">
+        <div class="terms" role="img" aria-label="В пропорции а относится к б как с к дэ числа а и дэ крайние, числа б и с средние">
+          <span class="term outer">a</span><span>:</span><span class="term middle">b</span><span>=</span><span class="term middle">c</span><span>:</span><span class="term outer">d</span>
+        </div>
+        <div class="legend">
+          <span class="outer-key"><i aria-hidden="true"></i><strong>Крайние:</strong> a и d</span>
+          <span class="middle-key"><i aria-hidden="true"></i><strong>Средние:</strong> b и c</span>
+        </div>
+      </div>
+      <div class="property">
+        <div class="property-copy">
+          <h3>Основное свойство</h3>
+          <p>Равенство отношений является пропорцией тогда и только тогда, когда произведение крайних членов равно произведению средних.</p>
+          <div class="ratio-line" aria-label="а умножить на дэ равно б умножить на с"><span class="outer-key">a · d</span><span>=</span><span class="middle-key">b · c</span></div>
+        </div>
+        <div class="products" id="products" role="img">
+          <div class="product-row">
+            <span class="product-label" id="outer-label">2 · 10</span>
+            <span class="meter"><span class="meter-fill outer" id="outer-meter"></span></span>
+            <span class="product-number" id="outer-product">20</span>
+          </div>
+          <div class="product-row">
+            <span class="product-label" id="middle-label">6 · 4</span>
+            <span class="meter"><span class="meter-fill middle" id="middle-meter"></span></span>
+            <span class="product-number" id="middle-product">24</span>
+          </div>
+          <p class="property-result" id="property-result"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="lesson" id="example" aria-labelledby="example-heading">
+    <div class="lesson-head"><span class="step">Шаг 3</span><h2 id="example-heading">Как найти неизвестный член?</h2></div>
+    <p class="lead">На другой карте 3 см соответствуют 5 км. Сколько сантиметров будут изображать 20 км в том же масштабе?</p>
+    <div class="example">
+      <div class="example-map" role="img" aria-label="На карте 3 сантиметра соответствуют 5 километрам, икс сантиметров соответствуют 20 километрам">
+        <div class="route"><strong>Карта</strong><span class="route-line" style="width: 25%"></span><output>3 см</output></div>
+        <div class="route"><strong>Местность</strong><span class="route-line long" style="width: 25%"></span><output>5 км</output></div>
+        <div class="route"><strong>Карта</strong><span class="route-line" style="width: 100%"></span><output>x см</output></div>
+        <div class="route"><strong>Местность</strong><span class="route-line long" style="width: 100%"></span><output>20 км</output></div>
+      </div>
+      <div class="solution">
+        <h3>Перемножаем крест-накрест</h3>
+        <p>Ставим соответствующие величины на одинаковые места в отношениях: сантиметры сверху, километры снизу.</p>
+        <div class="solution-steps">
+          <div class="solution-step"><b>1</b><span>3 : 5 = x : 20</span></div>
+          <div class="solution-step"><b>2</b><span>3 · 20 = 5 · x</span></div>
+          <div class="solution-step"><b>3</b><span>60 = 5x, значит x = 12</span></div>
+        </div>
+        <p><strong>Ответ:</strong> 12 см. Проверка: 3 · 20 = 5 · 12 = 60.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="lesson" id="quiz" aria-labelledby="quiz-heading">
+    <div class="lesson-head"><span class="step">Шаг 4</span><h2 id="quiz-heading">Проверь себя</h2></div>
+    <div class="quiz">
+      <p class="quiz-meta" id="quiz-progress"></p>
+      <h3 id="question"></h3>
+      <div class="options" id="options"></div>
+      <p class="feedback" id="feedback" role="status" aria-live="polite"></p>
+      <button class="next" id="quiz-next" type="button" disabled>Дальше →</button>
+    </div>
+  </section>
+</main>
+<footer><div class="wrap"><a href="../../">← Вернуться ко всем предметам</a></div></footer>
+<script>
+(() => {
+  "use strict";
+
+  const find = (id) => document.getElementById(id);
+  const number = new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 3 });
+  let distance = 10;
+
+  function fraction(top, bottom) {
+    return `<span class="fraction" aria-hidden="true"><span>${top}</span><span>${bottom}</span></span>`;
+  }
+
+  function mapDiagram(value) {
+    const rightRealLength = value * 9;
+    const matches = value === 12;
+    const verdict = matches ? "Масштабы равны" : "Масштабы различаются";
+    if (window.matchMedia("(max-width: 760px)").matches) {
+      return `<svg viewBox="0 0 300 350" role="img" aria-labelledby="map-title map-desc">
+        <title id="map-title">Сравнение масштаба двух карт</title>
+        <desc id="map-desc">На первой карте 2 сантиметра соответствуют 6 километрам. На второй карте 4 сантиметра соответствуют ${value} километрам. ${verdict}.</desc>
+        <defs><pattern id="grid-mobile" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0H0V20" fill="none" stroke="#dbe7d8" stroke-width="1"/></pattern></defs>
+        <rect width="300" height="350" fill="url(#grid-mobile)"/>
+        <rect x="12" y="12" width="276" height="155" rx="16" fill="#fffefa" stroke="#d6ddd2"/>
+        <rect x="12" y="183" width="276" height="155" rx="16" fill="#fffefa" stroke="#d6ddd2"/>
+        <text x="32" y="40" fill="#192d29" font-size="16" font-weight="750">Первая пара</text>
+        <text x="32" y="68" fill="#4d625a" font-size="13">На карте</text>
+        <line x1="32" y1="88" x2="92" y2="88" stroke="#14624f" stroke-width="7" stroke-linecap="round"/>
+        <circle cx="32" cy="88" r="5" fill="#fffefa" stroke="#14624f" stroke-width="3"/><circle cx="92" cy="88" r="5" fill="#fffefa" stroke="#14624f" stroke-width="3"/>
+        <text x="106" y="94" fill="#14624f" font-size="15" font-weight="800">2 см</text>
+        <text x="32" y="120" fill="#4d625a" font-size="13">На местности</text>
+        <line x1="32" y1="141" x2="86" y2="141" stroke="#ad4325" stroke-width="7" stroke-linecap="round"/>
+        <circle cx="32" cy="141" r="5" fill="#fffefa" stroke="#ad4325" stroke-width="3"/><circle cx="86" cy="141" r="5" fill="#fffefa" stroke="#ad4325" stroke-width="3"/>
+        <text x="100" y="147" fill="#ad4325" font-size="15" font-weight="800">6 км</text>
+        <text x="32" y="211" fill="#192d29" font-size="16" font-weight="750">Вторая пара</text>
+        <text x="32" y="239" fill="#4d625a" font-size="13">На карте</text>
+        <line x1="32" y1="259" x2="152" y2="259" stroke="#14624f" stroke-width="7" stroke-linecap="round"/>
+        <circle cx="32" cy="259" r="5" fill="#fffefa" stroke="#14624f" stroke-width="3"/><circle cx="152" cy="259" r="5" fill="#fffefa" stroke="#14624f" stroke-width="3"/>
+        <text x="166" y="265" fill="#14624f" font-size="15" font-weight="800">4 см</text>
+        <text x="32" y="291" fill="#4d625a" font-size="13">На местности</text>
+        <line x1="32" y1="312" x2="${32 + rightRealLength}" y2="312" stroke="#ad4325" stroke-width="7" stroke-linecap="round"/>
+        <circle cx="32" cy="312" r="5" fill="#fffefa" stroke="#ad4325" stroke-width="3"/><circle cx="${32 + rightRealLength}" cy="312" r="5" fill="#fffefa" stroke="#ad4325" stroke-width="3"/>
+        <text x="${46 + rightRealLength}" y="318" fill="#ad4325" font-size="15" font-weight="800">${value} км</text>
+      </svg>`;
+    }
+    return `<svg viewBox="0 0 600 265" role="img" aria-labelledby="map-title map-desc">
+      <title id="map-title">Сравнение масштаба двух карт</title>
+      <desc id="map-desc">На первой карте 2 сантиметра соответствуют 6 километрам. На второй карте 4 сантиметра соответствуют ${value} километрам. ${verdict}.</desc>
+      <defs><pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0H0V20" fill="none" stroke="#dbe7d8" stroke-width="1"/></pattern></defs>
+      <rect width="600" height="265" fill="url(#grid)"/>
+      <rect x="25" y="24" width="260" height="214" rx="18" fill="#fffefa" stroke="#d6ddd2"/>
+      <rect x="315" y="24" width="260" height="214" rx="18" fill="#fffefa" stroke="#d6ddd2"/>
+      <text x="48" y="55" fill="#192d29" font-size="17" font-weight="750">Первая пара</text>
+      <text x="338" y="55" fill="#192d29" font-size="17" font-weight="750">Вторая пара</text>
+      <text x="48" y="89" fill="#4d625a" font-size="14">На карте</text>
+      <line x1="48" y1="110" x2="108" y2="110" stroke="#14624f" stroke-width="7" stroke-linecap="round"/>
+      <circle cx="48" cy="110" r="6" fill="#fffefa" stroke="#14624f" stroke-width="3"/><circle cx="108" cy="110" r="6" fill="#fffefa" stroke="#14624f" stroke-width="3"/>
+      <text x="123" y="116" fill="#14624f" font-size="16" font-weight="800">2 см</text>
+      <text x="48" y="154" fill="#4d625a" font-size="14">На местности</text>
+      <line x1="48" y1="177" x2="102" y2="177" stroke="#ad4325" stroke-width="7" stroke-linecap="round"/>
+      <circle cx="48" cy="177" r="6" fill="#fffefa" stroke="#ad4325" stroke-width="3"/><circle cx="102" cy="177" r="6" fill="#fffefa" stroke="#ad4325" stroke-width="3"/>
+      <text x="117" y="183" fill="#ad4325" font-size="16" font-weight="800">6 км</text>
+      <text x="338" y="89" fill="#4d625a" font-size="14">На карте</text>
+      <line x1="338" y1="110" x2="458" y2="110" stroke="#14624f" stroke-width="7" stroke-linecap="round"/>
+      <circle cx="338" cy="110" r="6" fill="#fffefa" stroke="#14624f" stroke-width="3"/><circle cx="458" cy="110" r="6" fill="#fffefa" stroke="#14624f" stroke-width="3"/>
+      <text x="473" y="116" fill="#14624f" font-size="16" font-weight="800">4 см</text>
+      <text x="338" y="154" fill="#4d625a" font-size="14">На местности</text>
+      <line x1="338" y1="177" x2="${338 + rightRealLength}" y2="177" stroke="#ad4325" stroke-width="7" stroke-linecap="round"/>
+      <circle cx="338" cy="177" r="6" fill="#fffefa" stroke="#ad4325" stroke-width="3"/><circle cx="${338 + rightRealLength}" cy="177" r="6" fill="#fffefa" stroke="#ad4325" stroke-width="3"/>
+      <text x="338" y="215" fill="#ad4325" font-size="16" font-weight="800">${value} км</text>
+    </svg>`;
+  }
+
+  function showModel() {
+    const leftRatio = 2 / 6;
+    const rightRatio = 4 / distance;
+    const matches = Math.abs(leftRatio - rightRatio) < 1e-9;
+    const outerProduct = 2 * distance;
+    const middleProduct = 6 * 4;
+
+    find("distance-value").textContent = `${distance} км`;
+    find("distance").value = distance;
+    find("distance").setAttribute("aria-valuetext", `${distance} километров`);
+    find("map-visual").innerHTML = mapDiagram(distance);
+    find("ratio-line").setAttribute("aria-label", `Два разделить на шесть ${matches ? "равно" : "не равно"} четыре разделить на ${distance}`);
+    find("ratio-line").innerHTML = `${fraction(2, 6)}<span>${matches ? "=" : "≠"}</span>${fraction(4, distance)}`;
+    find("ratio-values").textContent = `${number.format(leftRatio)} ${matches ? "=" : "≠"} ${number.format(rightRatio)}`;
+    find("model-status").dataset.match = matches;
+    find("model-status").textContent = matches
+      ? "Готово: отношения равны, это пропорция."
+      : "Пока не пропорция: найди одинаковый масштаб.";
+
+    find("outer-label").textContent = `2 · ${distance}`;
+    find("outer-product").textContent = outerProduct;
+    find("middle-label").textContent = "6 · 4";
+    find("middle-product").textContent = middleProduct;
+    find("outer-meter").style.width = `${outerProduct / 32 * 100}%`;
+    find("middle-meter").style.width = `${middleProduct / 32 * 100}%`;
+    find("property-result").textContent = matches
+      ? `${outerProduct} = ${middleProduct}: произведения равны.`
+      : `${outerProduct} ≠ ${middleProduct}: равенство отношений неверно.`;
+    find("products").setAttribute("aria-label", `Произведение крайних членов: 2 умножить на ${distance}, получится ${outerProduct}. Произведение средних: 6 умножить на 4, получится ${middleProduct}. ${matches ? "Произведения равны" : "Произведения не равны"}.`);
+
+    document.querySelectorAll(".preset").forEach((button) => {
+      button.setAttribute("aria-pressed", Number(button.dataset.distance) === distance);
+    });
+  }
+
+  find("distance").addEventListener("input", (event) => {
+    distance = Number(event.target.value);
+    showModel();
+  });
+
+  document.querySelectorAll(".preset").forEach((button) => {
+    button.addEventListener("click", () => {
+      distance = Number(button.dataset.distance);
+      showModel();
+    });
+  });
+
+  window.addEventListener("resize", showModel);
+
+  const questions = [
+    {
+      text: "Какое равенство является пропорцией?",
+      options: ["3 : 4 = 6 : 8", "3 : 4 = 6 : 9", "3 + 4 = 6 + 1"],
+      correct: 0,
+      hint: "Сначала проверь, что здесь равны именно два отношения. Затем сравни произведения крест-накрест.",
+      explanation: "Верно. 3 · 8 = 24 и 4 · 6 = 24, поэтому отношения равны."
+    },
+    {
+      text: "Какие числа крайние в пропорции 2 : 5 = 6 : 15?",
+      options: ["2 и 15", "5 и 6", "2 и 6"],
+      correct: 0,
+      hint: "Запиши пропорцию в строку и посмотри на первое и последнее места.",
+      explanation: "Да. 2 и 15 стоят по краям записи, поэтому они крайние."
+    },
+    {
+      text: "Как записать основное свойство для a : b = c : d?",
+      options: ["a · d = b · c", "a · b = c · d", "a + d = b + c"],
+      correct: 0,
+      hint: "Перемножь пару по одной диагонали и пару по другой.",
+      explanation: "Да. Произведение крайних a и d равно произведению средних b и c."
+    },
+    {
+      text: "Является ли равенство 4 : 7 = 12 : 21 пропорцией?",
+      options: ["Да", "Нет", "Нельзя проверить"],
+      correct: 0,
+      hint: "Сравни 4 · 21 и 7 · 12.",
+      explanation: "Да. Оба произведения равны 84, значит равенство отношений истинное."
+    },
+    {
+      text: "Найди x в пропорции 3 : 5 = x : 20.",
+      options: ["12", "15", "4"],
+      correct: 0,
+      hint: "Составь равенство произведений: 3 · 20 = 5 · x. Как найти неизвестный множитель?",
+      explanation: "Верно. 60 = 5x, поэтому x = 12."
+    },
+    {
+      text: "На карте 2 см соответствуют 6 км. Сколько километров должны обозначать 4 см в том же масштабе?",
+      options: ["10 км", "12 км", "14 км"],
+      correct: 1,
+      hint: "4 см вдвое больше 2 см. Во сколько раз должно измениться расстояние на местности?",
+      explanation: "Да. Обе величины увеличиваются вдвое: 2 : 6 = 4 : 12."
+    }
+  ];
+
+  let questionIndex = 0;
+  let answered = false;
+
+  function showQuestion() {
+    const question = questions[questionIndex];
+    const next = find("quiz-next");
+    find("options").replaceChildren();
+    find("feedback").textContent = "";
+    delete find("feedback").dataset.result;
+    answered = false;
+
+    if (!question) {
+      find("quiz-progress").textContent = `Пройдено ${questions.length} из ${questions.length}`;
+      find("question").textContent = "Ты умеешь проверять и решать пропорции!";
+      find("feedback").textContent = "Главная проверка: произведение крайних равно произведению средних.";
+      next.textContent = "Пройти ещё раз";
+      next.disabled = false;
+      return;
+    }
+
+    find("quiz-progress").textContent = `Вопрос ${questionIndex + 1} из ${questions.length}`;
+    find("question").textContent = question.text;
+    next.textContent = questionIndex === questions.length - 1 ? "Завершить" : "Дальше →";
+    next.disabled = true;
+
+    question.options.forEach((option, index) => {
+      const button = document.createElement("button");
+      button.className = "option";
+      button.type = "button";
+      button.textContent = option;
+      button.addEventListener("click", () => {
+        if (answered) return;
+        const correct = index === question.correct;
+        find("options").querySelectorAll("button").forEach((candidate) => delete candidate.dataset.result);
+        button.dataset.result = correct ? "right" : "wrong";
+        const feedback = find("feedback");
+        feedback.dataset.result = correct ? "right" : "wrong";
+        feedback.textContent = correct ? question.explanation : question.hint;
+        answered = correct;
+        next.disabled = !correct;
+        if (correct) {
+          find("options").querySelectorAll("button").forEach((candidate) => { candidate.disabled = true; });
+        }
+      });
+      find("options").append(button);
+    });
+  }
+
+  find("quiz-next").addEventListener("click", () => {
+    questionIndex = questionIndex >= questions.length ? 0 : questionIndex + 1;
+    showQuestion();
+    (find("options").querySelector("button") || find("quiz-next")).focus();
+  });
+
+  showModel();
+  showQuestion();
+})();
+</script>
+</body>
+</html>

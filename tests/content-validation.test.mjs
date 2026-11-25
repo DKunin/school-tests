@@ -4,8 +4,8 @@ import { validateAllLessons, validateLessonHtml } from "../scripts/validate-cont
 
 test("все уроки проходят единые ограничения публикации", async () => {
   const validated = await validateAllLessons();
-  assert.equal(validated.length, 3);
-  assert.deepEqual(validated.map(({ questionCount }) => questionCount), [6, 5, 6]);
+  assert.equal(validated.length, 4);
+  assert.deepEqual(validated.map(({ questionCount }) => questionCount), [6, 5, 6, 6]);
 });
 
 test("валидатор отклоняет внешние скрипты", () => {

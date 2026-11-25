@@ -17,8 +17,8 @@ test("каталог содержит полный упорядоченный с
     "Информатика"
   ]);
   const math = subjects.find(({ slug }) => slug === "math");
-  assert.equal(math.lessons.length, 1);
-  assert.equal(math.lessons[0].slug, "trigonometriya");
+  assert.equal(math.lessons.length, 2);
+  assert.deepEqual(math.lessons.map(({ slug }) => slug), ["trigonometriya", "proportsiya"]);
 });
 
 test("каталог включает уроки по истории и литературе", async () => {
@@ -41,7 +41,7 @@ test("slug урока уникален внутри предмета", async () 
 test("каждый урок содержит интерактивную самопроверку", async () => {
   const subjects = await loadCatalog();
   const lessons = subjects.flatMap(({ lessons }) => lessons);
-  assert.equal(lessons.length, 3);
+  assert.equal(lessons.length, 4);
   for (const lesson of lessons) {
     const html = await readFile(path.join(lesson.sourceDirectory, "index.html"), "utf8");
     assert.match(html, /id="quiz"/, lesson.slug);
