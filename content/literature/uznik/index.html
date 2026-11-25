@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; base-uri 'none'; form-action 'none'">
+<meta name="description" content="Стихотворение А. С. Пушкина «Узник», краткая памятка и самопроверка.">
+<title>«Узник» А. С. Пушкина</title>
+<style>
+:root { --paper:#f8f7f1; --ink:#192d29; --muted:#52665f; --line:#d6ddd2; --white:#fffefa; --mint:#e8f2e8; --green:#24493a; --lime:#d9ec90; --violet:#6546a5; --violet-soft:#eee9f8; --rust:#a94b2d; --radius:24px; }
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { margin:0; color:var(--ink); background:var(--paper); font:17px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+h1,h2,h3,p,blockquote { margin:0; }
+a { color:inherit; }
+button { color:inherit; font:inherit; cursor:pointer; }
+mark { color:inherit; background:transparent; border-radius:4px; }
+:focus-visible { outline:3px solid var(--violet); outline-offset:4px; }
+[hidden] { display:none!important; }
+.wrap { width:min(960px,calc(100% - 48px)); margin-inline:auto; }
+.top { border-bottom:1px solid var(--line); }
+.top .wrap { display:flex; align-items:center; justify-content:space-between; min-height:67px; gap:18px; }
+.home { display:inline-flex; align-items:center; gap:9px; font-weight:780; text-decoration:none; white-space:nowrap; }
+.home-mark { display:inline-grid; place-items:center; width:33px; height:33px; border-radius:10px; background:var(--lime); color:var(--green); }
+nav { display:flex; gap:20px; font-size:.88rem; }
+nav a { color:var(--muted); text-decoration:none; }
+nav a:hover { color:var(--ink); text-decoration:underline; text-underline-offset:4px; }
+.hero { padding:clamp(38px,6vw,70px) 0 clamp(26px,4vw,42px); }
+.hero h1 { max-width:820px; font-size:clamp(2.25rem,5.5vw,4.5rem); line-height:.99; letter-spacing:-.072em; font-weight:850; text-wrap:balance; }
+.hero p { max-width:680px; margin-top:18px; color:var(--muted); font-size:clamp(1.04rem,2vw,1.22rem); }
+.reading { display:grid; grid-template-columns:minmax(0,1.25fr) minmax(260px,.75fr); overflow:hidden; border:1px solid var(--line); border-radius:var(--radius); background:var(--white); }
+.poem { padding:clamp(22px,4vw,42px); }
+.poem header { display:flex; align-items:baseline; justify-content:space-between; gap:16px; margin-bottom:20px; }
+.poem header p { color:var(--muted); font-size:.9rem; white-space:nowrap; }
+.stanza { padding:9px 12px; border-left:4px solid transparent; border-radius:0 12px 12px 0; font-family:Georgia,"Times New Roman",serif; font-size:clamp(1.08rem,2vw,1.24rem); line-height:1.65; transition:.18s ease; }
+.stanza+.stanza { margin-top:5px; }
+.stanza span { display:block; }
+.reading[data-focus="cage"] [data-cage],.reading[data-focus="freedom"] [data-freedom] { color:var(--violet); background:var(--violet-soft); }
+.memo { padding:clamp(22px,3vw,32px); background:var(--mint); }
+.memo h2 { font-size:clamp(1.35rem,2.5vw,1.8rem); line-height:1.1; letter-spacing:-.04em; }
+.facts { display:grid; gap:13px; margin:20px 0; }
+.fact { padding-bottom:13px; border-bottom:1px solid #cbd9cb; }
+.fact:last-child { padding-bottom:0; border:0; }
+.fact b { display:block; margin-bottom:2px; }
+.fact p { color:var(--muted); }
+.focus-controls { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.focus-button { min-height:44px; padding:8px; border:1px solid #b9c9bc; border-radius:999px; background:var(--white); font-weight:760; }
+.focus-button[aria-pressed="true"] { color:white; background:var(--green); border-color:var(--green); }
+.quiz-section { padding:clamp(48px,7vw,80px) 0; }
+.quiz-head { display:flex; align-items:baseline; gap:12px; margin-bottom:16px; }
+.step { padding:3px 9px; border-radius:999px; color:var(--green); background:var(--lime); font-size:.8rem; font-weight:800; white-space:nowrap; }
+.quiz-head h2 { font-size:clamp(1.45rem,3vw,2.25rem); line-height:1.1; letter-spacing:-.045em; }
+.quiz { padding:clamp(22px,4vw,36px); border:1px solid #c8d7c7; border-radius:var(--radius); background:var(--mint); }
+.quiz-top { display:flex; justify-content:space-between; gap:14px; margin-bottom:18px; color:var(--muted); font-size:.9rem; font-weight:720; }
+.quiz h3 { font-size:clamp(1.12rem,2.4vw,1.45rem); line-height:1.25; }
+.options { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px; margin-top:17px; }
+.option { min-height:52px; padding:11px 14px; border:1px solid var(--line); border-radius:14px; background:var(--white); text-align:left; }
+.option:hover { border-color:var(--green); }
+.option[aria-pressed="true"] { color:white; background:var(--green); border-color:var(--green); }
+.actions { display:flex; flex-wrap:wrap; gap:9px; margin-top:17px; }
+.primary,.secondary { min-height:44px; padding:8px 15px; border-radius:999px; font-weight:780; }
+.primary { border:1px solid var(--green); color:white; background:var(--green); }
+.primary:disabled { opacity:.45; cursor:not-allowed; }
+.secondary { border:1px solid var(--line); background:var(--white); }
+.feedback { margin-top:14px; padding:12px 14px; border-left:4px solid var(--green); border-radius:12px; background:var(--white); }
+.feedback[data-kind="wrong"] { border-left-color:var(--rust); }
+.finish { text-align:center; }
+.finish strong { display:block; margin-bottom:6px; font-size:2rem; }
+.source { padding:20px 0 42px; border-top:1px solid var(--line); color:var(--muted); font-size:.86rem; }
+.source a { text-underline-offset:3px; }
+@media(max-width:720px){ .wrap{width:min(100% - 30px,960px)} .top .wrap{align-items:flex-start;flex-direction:column;padding-block:12px}.reading{grid-template-columns:1fr}.poem{padding:22px 18px}.poem header{align-items:flex-start;flex-direction:column;gap:3px}.options{grid-template-columns:1fr} }
+@media(prefers-reduced-motion:reduce){ html{scroll-behavior:auto}.stanza{transition:none} }
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap"><a class="home" href="../../"><span class="home-mark" aria-hidden="true">◢</span><span>Школьные темы</span></a><nav aria-label="Разделы"><a href="#poem">Стихотворение</a><a href="#quiz">Самопроверка</a></nav></div></header>
+<main>
+  <section class="hero wrap"><h1>«Узник»<br>А. С. Пушкина</h1><p>Само стихотворение, короткая памятка и несколько вопросов для проверки.</p></section>
+  <section class="reading wrap" id="poem" data-focus="cage">
+    <article class="poem" aria-labelledby="poem-title">
+      <header><h2 id="poem-title">Узник</h2><p>1822 год</p></header>
+      <blockquote>
+        <p class="stanza"><span>Сижу за <mark data-cage>решеткой</mark> в <mark data-cage>темнице сырой</mark>.</span><span>Вскормленный в <mark data-cage>неволе</mark> орел молодой,</span><span>Мой грустный товарищ, махая крылом,</span><span>Кровавую пищу клюет под окном,</span></p>
+        <p class="stanza"><span>Клюет, и бросает, и смотрит в окно,</span><span>Как будто со мною задумал одно.</span><span>Зовет меня взглядом и криком своим</span><span>И вымолвить хочет: «<mark data-freedom>Давай улетим!</mark></span></p>
+        <p class="stanza"><span>Мы <mark data-freedom>вольные птицы</mark>; пора, брат, пора!</span><span>Туда, где за тучей белеет <mark data-freedom>гора</mark>,</span><span>Туда, где синеют <mark data-freedom>морские края</mark>,</span><span>Туда, где гуляем лишь <mark data-freedom>ветер</mark>… да я!..»</span></p>
+      </blockquote>
+    </article>
+    <aside class="memo" aria-labelledby="memo-title">
+      <h2 id="memo-title">Коротко</h2>
+      <div class="facts">
+        <div class="fact"><b>Тема</b><p>Стремление к свободе.</p></div>
+        <div class="fact"><b>Главный образ</b><p>Орёл — товарищ узника и символ воли.</p></div>
+        <div class="fact"><b>Приём</b><p>Контраст тесной темницы и открытого мира: гор, моря, ветра.</p></div>
+      </div>
+      <div class="focus-controls" aria-label="Подсветить образы"><button class="focus-button" type="button" data-focus-button="cage" aria-pressed="true">Неволя</button><button class="focus-button" type="button" data-focus-button="freedom" aria-pressed="false">Свобода</button></div>
+    </aside>
+  </section>
+  <section class="quiz-section wrap" id="quiz">
+    <div class="quiz-head"><span class="step">5 вопросов</span><h2>Проверь себя</h2></div>
+    <div class="quiz">
+      <div id="quiz-round"><div class="quiz-top"><span id="quiz-progress"></span><span id="quiz-score"></span></div><h3 id="quiz-question"></h3><div class="options" id="quiz-options"></div><div class="actions"><button class="primary" id="check-answer" type="button" disabled>Проверить</button><button class="secondary" id="next-question" type="button" hidden>Дальше</button></div><p class="feedback" id="quiz-feedback" aria-live="polite" hidden></p></div>
+      <div class="finish" id="quiz-finish" hidden><strong id="finish-title">Готово!</strong><p id="finish-copy"></p><div class="actions" style="justify-content:center"><button class="primary" id="restart-quiz" type="button">Ещё раз</button></div></div>
+    </div>
+  </section>
+</main>
+<footer class="source"><div class="wrap">Текст сверен с публикацией <a href="https://www.culture.ru/poems/4416/uznik" rel="noreferrer">Культура.РФ</a>. Ответы никуда не отправляются.</div></footer>
+<script>
+const reading=document.querySelector(".reading");
+document.querySelectorAll("[data-focus-button]").forEach(button=>button.addEventListener("click",()=>{reading.dataset.focus=button.dataset.focusButton;document.querySelectorAll("[data-focus-button]").forEach(item=>item.setAttribute("aria-pressed",String(item===button)))}));
+const questions=[
+  {q:"Кто автор стихотворения «Узник»?",o:["А. С. Пушкин","М. Ю. Лермонтов","И. А. Крылов","Н. А. Некрасов"],a:0,h:"Имя автора стоит в заголовке страницы.",e:"«Узник» написал Александр Сергеевич Пушкин."},
+  {q:"В каком году написано стихотворение?",o:["1812","1822","1837","1841"],a:1,h:"Дата указана рядом с названием.",e:"Стихотворение датировано 1822 годом."},
+  {q:"Что объединяет героя и орла?",o:["Они оба в неволе","Они охотятся","Они путешествуют","Они спорят"],a:0,h:"Почему герой называет орла товарищем?",e:"Оба лишены свободы и мечтают вырваться."},
+  {q:"Что символизирует орёл?",o:["Богатство","Опасность","Свободу","Время"],a:2,h:"Вспомни выражение «вольные птицы».",e:"Орёл — центральный образ свободы."},
+  {q:"Какой главный контраст в стихотворении?",o:["Зима и лето","Неволя и свобода","Город и деревня","Тишина и музыка"],a:1,h:"Сопоставь темницу с горами, морем и ветром.",e:"Тесной темнице противопоставлен открытый свободный мир."}
+];
+let index=0,score=0,selected=null,answered=false;
+const q=document.querySelector("#quiz-question"),opts=document.querySelector("#quiz-options"),progress=document.querySelector("#quiz-progress"),scoreNode=document.querySelector("#quiz-score"),check=document.querySelector("#check-answer"),next=document.querySelector("#next-question"),feedback=document.querySelector("#quiz-feedback");
+function render(){selected=null;answered=false;const item=questions[index];progress.textContent=`Вопрос ${index+1} из ${questions.length}`;scoreNode.textContent=`Верно: ${score}`;q.textContent=item.q;opts.replaceChildren();item.o.forEach((label,i)=>{const button=document.createElement("button");button.type="button";button.className="option";button.textContent=label;button.setAttribute("aria-pressed","false");button.addEventListener("click",()=>{if(answered)return;selected=i;opts.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",String(x===button)));check.disabled=false});opts.append(button)});check.disabled=true;check.hidden=false;next.hidden=true;feedback.hidden=true}
+check.addEventListener("click",()=>{if(selected===null||answered)return;const item=questions[index];if(selected!==item.a){feedback.dataset.kind="wrong";feedback.textContent=`Подсказка: ${item.h}`;feedback.hidden=false;return}answered=true;score++;scoreNode.textContent=`Верно: ${score}`;feedback.dataset.kind="right";feedback.textContent=item.e;feedback.hidden=false;check.hidden=true;next.textContent=index===questions.length-1?"Результат":"Дальше";next.hidden=false});
+next.addEventListener("click",()=>{index++;if(index<questions.length)return render();document.querySelector("#quiz-round").hidden=true;document.querySelector("#quiz-finish").hidden=false;document.querySelector("#finish-title").textContent=score===questions.length?"Отлично!":"Готово!";document.querySelector("#finish-copy").textContent=`${score} из ${questions.length}.`});
+document.querySelector("#restart-quiz").addEventListener("click",()=>{index=0;score=0;document.querySelector("#quiz-round").hidden=false;document.querySelector("#quiz-finish").hidden=true;render()});
+render();
+</script>
+</body>
+</html>

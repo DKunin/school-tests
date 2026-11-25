@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; base-uri 'none'; form-action 'none'">
+<meta name="description" content="Шпаргалка по расселению славян, интерактивная схема карты и тест для 6 класса.">
+<title>Расселение славян: работа с картой</title>
+<style>
+:root { --paper:#f8f7f1; --ink:#192d29; --muted:#52665f; --line:#d6ddd2; --white:#fffefa; --mint:#e8f2e8; --green:#24493a; --lime:#d9ec90; --violet:#6546a5; --violet-soft:#eee9f8; --blue:#367a96; --blue-soft:#dcecf2; --rust:#a94b2d; --orange:#d5823a; --radius:24px; }
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { margin:0; color:var(--ink); background:var(--paper); font:17px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+h1,h2,h3,p,figure,ul { margin:0; }
+a { color:inherit; }
+button { color:inherit; font:inherit; cursor:pointer; }
+:focus-visible { outline:3px solid var(--violet); outline-offset:4px; }
+[hidden] { display:none!important; }
+.wrap { width:min(1120px,calc(100% - 48px)); margin-inline:auto; }
+.top { border-bottom:1px solid var(--line); }
+.top .wrap { display:flex; align-items:center; justify-content:space-between; min-height:67px; gap:18px; }
+.home { display:inline-flex; align-items:center; gap:9px; font-weight:780; text-decoration:none; white-space:nowrap; }
+.home-mark { display:inline-grid; place-items:center; width:33px; height:33px; border-radius:10px; background:var(--lime); color:var(--green); }
+nav { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:10px 22px; font-size:.88rem; }
+nav a { color:var(--muted); text-decoration:none; }
+nav a:hover { color:var(--ink); text-decoration:underline; text-underline-offset:4px; }
+.hero { padding:clamp(38px,6vw,76px) 0 clamp(30px,4vw,48px); }
+.hero h1 { max-width:950px; font-size:clamp(2.25rem,5.5vw,4.5rem); line-height:.99; letter-spacing:-.072em; font-weight:850; text-wrap:balance; }
+.hero p { max-width:760px; margin-top:20px; color:var(--muted); font-size:clamp(1.05rem,2.2vw,1.25rem); text-wrap:pretty; }
+.lesson { padding-bottom:clamp(48px,7vw,84px); scroll-margin-top:20px; }
+.lesson-head { display:flex; align-items:baseline; gap:12px; margin-bottom:16px; }
+.step { flex:0 0 auto; padding:3px 9px; border-radius:999px; color:var(--green); background:var(--lime); font-size:.8rem; font-weight:800; }
+h2 { font-size:clamp(1.45rem,3vw,2.25rem); line-height:1.1; letter-spacing:-.045em; font-weight:820; text-wrap:balance; }
+h3 { font-size:1.08rem; line-height:1.24; letter-spacing:-.015em; text-wrap:balance; }
+.lead { max-width:780px; margin-bottom:20px; color:var(--muted); }
+.memory-line { display:grid; grid-template-columns:1fr auto 1fr auto 1fr; align-items:center; gap:14px; padding:clamp(20px,4vw,34px); border:1px solid var(--line); border-radius:var(--radius); background:var(--white); }
+.memory-part b { display:block; margin-bottom:4px; color:var(--violet); font-size:.82rem; text-transform:uppercase; letter-spacing:.05em; }
+.memory-part span { font-weight:760; }
+.memory-arrow { color:var(--violet); font-size:1.6rem; font-weight:850; }
+.fact-grid { display:grid; grid-template-columns:repeat(3,1fr); margin-top:16px; border:1px solid var(--line); border-radius:var(--radius); overflow:hidden; background:var(--white); }
+.fact { padding:clamp(20px,3vw,30px); }
+.fact+.fact { border-left:1px solid var(--line); }
+.fact b { display:block; margin-bottom:8px; color:var(--violet); }
+.fact p { color:var(--muted); }
+.map-board { display:grid; grid-template-columns:minmax(0,1.35fr) minmax(270px,.65fr); overflow:hidden; border:1px solid var(--line); border-radius:var(--radius); background:var(--white); }
+.map-side { min-width:0; padding:clamp(14px,2vw,24px); background:var(--blue-soft); }
+.map-frame { overflow:hidden; border-radius:18px; background:#cfe5ea; }
+.map-frame svg { display:block; width:100%; height:auto; }
+.map-frame [data-layer-content] { opacity:.08; transition:opacity .2s ease; }
+.map-frame[data-layer="origin"] [data-layer-content="origin"],.map-frame[data-layer="routes"] [data-layer-content="routes"],.map-frame[data-layer="branches"] [data-layer-content="branches"],.map-frame[data-layer="objects"] [data-layer-content="objects"] { opacity:1; }
+.map-frame [data-object] { transition:filter .18s ease,stroke-width .18s ease; }
+.map-frame [data-object].is-found { filter:drop-shadow(0 0 7px #d9ec90); stroke:var(--rust)!important; }
+.map-frame[data-layer="objects"] .map-names { opacity:0; }
+.map-caption { margin-top:8px; color:var(--muted); font-size:.82rem; }
+.map-panel { padding:clamp(20px,3vw,32px); }
+.layer-buttons { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:18px 0; }
+.layer-button,.number-button { min-height:44px; border:1px solid var(--line); border-radius:999px; background:var(--white); font-weight:760; }
+.layer-button[aria-pressed="true"] { color:white; background:var(--green); border-color:var(--green); }
+.layer-note { min-height:96px; color:var(--muted); }
+.layer-note strong { display:block; margin-bottom:4px; color:var(--ink); }
+.object-drill { margin-top:18px; padding-top:18px; border-top:1px solid var(--line); }
+.object-drill h3 { margin-bottom:6px; }
+.number-buttons { display:grid; grid-template-columns:repeat(6,1fr); gap:6px; margin-top:12px; }
+.number-button { min-width:0; padding:6px; }
+.number-button:hover { border-color:var(--green); }
+.number-button.is-right { color:white; background:var(--green); border-color:var(--green); }
+.drill-feedback { margin-top:10px; color:var(--muted); font-size:.9rem; }
+.drill-next { margin-top:10px; }
+.branches { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+.branch { padding:22px; border:1px solid var(--line); border-radius:18px; background:var(--white); }
+.branch b { display:block; margin-bottom:12px; color:var(--violet); }
+.branch p { color:var(--muted); }
+.branch strong { color:var(--ink); }
+.checklist { display:grid; grid-template-columns:1fr 1fr; overflow:hidden; border:1px solid var(--line); border-radius:var(--radius); background:var(--white); }
+.checklist article { padding:clamp(22px,3vw,32px); }
+.checklist article+article { border-left:1px solid var(--line); background:var(--mint); }
+.checklist ul { display:grid; gap:9px; margin-top:14px; padding-left:22px; color:var(--muted); }
+.note { margin-top:16px; padding:13px 15px; border-left:4px solid var(--orange); border-radius:12px; background:#fff4e7; color:#6c4d2f; }
+.quiz { padding:clamp(22px,4vw,38px); border:1px solid #c8d7c7; border-radius:var(--radius); background:var(--mint); }
+.quiz-top { display:flex; justify-content:space-between; gap:14px; margin-bottom:18px; color:var(--muted); font-size:.9rem; font-weight:720; }
+.quiz h3 { font-size:clamp(1.12rem,2.4vw,1.45rem); }
+.options { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px; margin-top:17px; }
+.option { min-height:52px; padding:11px 14px; border:1px solid var(--line); border-radius:14px; background:var(--white); text-align:left; }
+.option:hover { border-color:var(--green); }
+.option[aria-pressed="true"] { color:white; background:var(--green); border-color:var(--green); }
+.actions { display:flex; flex-wrap:wrap; gap:9px; margin-top:17px; }
+.primary,.secondary { min-height:44px; padding:8px 15px; border-radius:999px; font-weight:780; }
+.primary { border:1px solid var(--green); color:white; background:var(--green); }
+.primary:disabled { opacity:.45; cursor:not-allowed; }
+.secondary { border:1px solid var(--line); background:var(--white); }
+.feedback { margin-top:14px; padding:12px 14px; border-left:4px solid var(--green); border-radius:12px; background:var(--white); }
+.feedback[data-kind="wrong"] { border-left-color:var(--rust); }
+.finish { text-align:center; }
+.finish strong { display:block; margin-bottom:6px; font-size:2rem; }
+.source { padding:20px 0 44px; border-top:1px solid var(--line); color:var(--muted); font-size:.86rem; }
+.source a { text-underline-offset:3px; }
+@media(max-width:820px){ .wrap{width:min(100% - 30px,1120px)}.top .wrap{align-items:flex-start;flex-direction:column;padding-block:12px}nav{justify-content:flex-start}.memory-line{grid-template-columns:1fr}.memory-arrow{transform:rotate(90deg);justify-self:center}.fact-grid,.branches{grid-template-columns:1fr}.fact+.fact{border-left:0;border-top:1px solid var(--line)}.map-board{grid-template-columns:1fr}.checklist{grid-template-columns:1fr}.checklist article+article{border-left:0;border-top:1px solid var(--line)}.options{grid-template-columns:1fr} }
+@media(max-width:430px){ .layer-buttons{grid-template-columns:1fr}.number-buttons{grid-template-columns:repeat(3,1fr)} }
+@media(prefers-reduced-motion:reduce){ html{scroll-behavior:auto}.map-frame [data-layer-content],.map-frame [data-object]{transition:none} }
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap"><a class="home" href="../../"><span class="home-mark" aria-hidden="true">◢</span><span>Школьные темы</span></a><nav aria-label="Разделы"><a href="#cheatsheet">Шпаргалка</a><a href="#map">Карта</a><a href="#quiz">Самопроверка</a></nav></div></header>
+<main>
+  <section class="hero wrap"><h1>Расселение славян:<br>работа с картой</h1><p>Коротко повтори исходную область, направления движения, три ветви славян и главные географические ориентиры.</p></section>
+
+  <section class="lesson wrap" id="cheatsheet">
+    <div class="lesson-head"><span class="step">Шаг 1</span><h2>Запомни одну цепочку</h2></div>
+    <div class="memory-line">
+      <div class="memory-part"><b>Откуда</b><span>от верховьев Эльбы до среднего Днепра</span></div><div class="memory-arrow" aria-hidden="true">→</div>
+      <div class="memory-part"><b>Куда</b><span>на северо-запад, восток и юг</span></div><div class="memory-arrow" aria-hidden="true">→</div>
+      <div class="memory-part"><b>Что получилось</b><span>западные, восточные и южные славяне</span></div>
+    </div>
+    <div class="fact-grid">
+      <article class="fact"><b>Главная дата</b><h3>VI век</h3><p>Двигаясь на юг, славяне достигли Дуная.</p></article>
+      <article class="fact"><b>Восточное направление</b><h3>Восточно-Европейская равнина</h3><p>Её осваивала одна из групп славян.</p></article>
+      <article class="fact"><b>Почему появились ветви</b><h3>Группы расселялись и обособлялись</h3><p>Постепенно сложились три ветви славян.</p></article>
+    </div>
+  </section>
+
+  <section class="lesson wrap" id="map">
+    <div class="lesson-head"><span class="step">Шаг 2</span><h2>Разбери карту по слоям</h2></div>
+    <p class="lead">Это учебная схема, а не политическая карта. Переключай слои, затем потренируйся узнавать шесть ориентиров по номерам.</p>
+    <div class="map-board">
+      <div class="map-side">
+        <figure class="map-frame" id="map-frame" data-layer="origin" aria-labelledby="map-title map-desc">
+          <svg viewBox="0 0 760 520" role="img">
+            <title id="map-title">Учебная схема расселения славян</title>
+            <desc id="map-desc">На схеме показаны Эльба, Висла, Днепр, Дунай, Балтийское и Чёрное моря, исходная область, направления расселения и три ветви славян.</desc>
+            <rect width="760" height="520" fill="#cfe5ea"/>
+            <path d="M70 88 180 50l104 28 73-27 117 39 112-9 91 72-28 59 45 54-55 63 18 60-72 80-125 6-77-44-100 42-122-42-14-86-62-51 45-83-47-45Z" fill="#f7f4e8" stroke="#9bb5ae" stroke-width="3"/>
+            <path d="M107 62c29 26 35 57 19 93l-43 42-21-65Z" fill="#f7f4e8" stroke="#9bb5ae" stroke-width="3"/>
+            <path d="M330 430c-4 35 17 62 30 82m28-77c15 28 16 49 7 73" fill="none" stroke="#9bb5ae" stroke-width="20" stroke-linecap="round"/>
+            <g fill="none" stroke="#367a96" stroke-width="5" stroke-linecap="round">
+              <path data-object="elbe" d="M247 150c-8 42-28 73-53 101s-38 59-43 92"/>
+              <path data-object="vistula" d="M347 139c-5 52 12 88 3 130s-5 61 2 82"/>
+              <path data-object="dnieper" d="M526 146c-26 45-21 94 2 126s15 77 29 116"/>
+              <path data-object="danube" d="M228 342c63 24 119 17 170 35s104 29 166 19"/>
+            </g>
+            <g data-layer-content="origin">
+              <path d="M235 191c77-46 201-38 291 25l-22 102c-94-35-194-30-288 3Z" fill="#d9ec90" opacity=".76" stroke="#6c8c35" stroke-width="4" stroke-dasharray="10 7"/>
+              <text x="370" y="246" text-anchor="middle" fill="#24493a" font-size="24" font-weight="800">исходная область</text>
+              <text x="370" y="274" text-anchor="middle" fill="#52665f" font-size="16">верховья Эльбы — средний Днепр</text>
+            </g>
+            <g data-layer-content="routes" fill="none" stroke="#a94b2d" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M342 250Q240 190 158 170l25-15m-25 15 17 25"/>
+              <path d="M411 250q100-25 181 0l-21-17m21 17-22 16"/>
+              <path d="M390 280q12 70 63 111l-4-27m4 27-27-2"/>
+              <g fill="#a94b2d" stroke="none" font-size="18" font-weight="800"><text x="132" y="140">северо-запад</text><text x="560" y="220">восток</text><text x="463" y="422">юг, к Дунаю</text></g>
+            </g>
+            <g data-layer-content="branches">
+              <ellipse cx="276" cy="245" rx="88" ry="70" fill="#d9ec90" opacity=".78"/><ellipse cx="506" cy="245" rx="103" ry="78" fill="#bfe2d0" opacity=".82"/><ellipse cx="419" cy="386" rx="111" ry="61" fill="#e5d7f5" opacity=".84"/>
+              <g fill="#192d29" font-size="19" font-weight="800" text-anchor="middle"><text x="276" y="242">западные</text><text x="506" y="242">восточные</text><text x="419" y="388">южные</text></g>
+            </g>
+            <g data-layer-content="objects">
+              <g fill="#24493a" font-size="17" font-weight="850" text-anchor="middle"><circle cx="190" cy="236" r="16"/><text x="190" y="242" fill="white">1</text><circle cx="350" cy="246" r="16"/><text x="350" y="252" fill="white">2</text><circle cx="530" cy="260" r="16"/><text x="530" y="266" fill="white">3</text><circle cx="407" cy="376" r="16"/><text x="407" y="382" fill="white">4</text><circle cx="395" cy="93" r="16"/><text x="395" y="99" fill="white">5</text><circle cx="593" cy="444" r="16"/><text x="593" y="450" fill="white">6</text></g>
+              <path data-object="baltic" d="M300 83q95-42 188 7" fill="none" stroke="#367a96" stroke-width="18" stroke-linecap="round" opacity=".55"/>
+              <path data-object="black" d="M530 441q68-31 132 2" fill="none" stroke="#367a96" stroke-width="22" stroke-linecap="round" opacity=".65"/>
+            </g>
+            <g class="map-names" fill="#52665f" font-size="14" font-weight="700"><text x="148" y="368">Эльба</text><text x="331" y="365">Висла</text><text x="562" y="354">Днепр</text><text x="284" y="405">Дунай</text><text x="363" y="47">Балтийское море</text><text x="565" y="488">Чёрное море</text></g>
+          </svg>
+        </figure>
+        <p class="map-caption">Положение объектов показано схематично. На контрольной ориентируйся по карте учебника и записям учителя.</p>
+      </div>
+      <aside class="map-panel">
+        <h3>Что показать</h3>
+        <div class="layer-buttons" aria-label="Слои карты"><button class="layer-button" type="button" data-layer-button="origin" aria-pressed="true">Исходная область</button><button class="layer-button" type="button" data-layer-button="routes" aria-pressed="false">Направления</button><button class="layer-button" type="button" data-layer-button="branches" aria-pressed="false">Три ветви</button><button class="layer-button" type="button" data-layer-button="objects" aria-pressed="false">Объекты</button></div>
+        <p class="layer-note" id="layer-note" aria-live="polite"><strong>Исходная область</strong>Найди верховья Эльбы на западе и среднее течение Днепра на востоке. Между ними — область, откуда шло расселение.</p>
+        <div class="object-drill" id="object-drill" hidden>
+          <h3 id="drill-question">Какой цифрой обозначена Эльба?</h3>
+          <div class="number-buttons" aria-label="Выбор номера"></div>
+          <p class="drill-feedback" id="drill-feedback" aria-live="polite">Выбери номер на схеме.</p>
+          <button class="secondary drill-next" id="drill-next" type="button" hidden>Следующий объект</button>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <section class="lesson wrap">
+    <div class="lesson-head"><span class="step">Шаг 3</span><h2>Не перепутай три ветви</h2></div>
+    <div class="branches">
+      <article class="branch"><b>Западные</b><p><strong>Поляки, чехи, словаки.</strong><br>Ориентир: Центральная Европа.</p></article>
+      <article class="branch"><b>Восточные</b><p><strong>Русские, украинцы, белорусы.</strong><br>Ориентир: Восточно-Европейская равнина.</p></article>
+      <article class="branch"><b>Южные</b><p><strong>Болгары, сербы, хорваты и другие.</strong><br>Ориентир: Дунай и Балканский полуостров.</p></article>
+    </div>
+  </section>
+
+  <section class="lesson wrap">
+    <div class="lesson-head"><span class="step">Шаг 4</span><h2>Что повторить перед работой</h2></div>
+    <div class="checklist">
+      <article><h3>По этой теме</h3><ul><li>показывать исходную область, а не одну точку;</li><li>называть направление движения и географический ориентир;</li><li>различать Эльбу, Вислу, Днепр и Дунай;</li><li>соотносить три ветви славян с территориями и народами.</li></ul></article>
+      <article><h3>По тетради</h3><ul><li>открой карты за этот и предыдущие уроки;</li><li>повтори все объекты, которые подписывали на уроке;</li><li>проверь условные знаки, стрелки походов и границы;</li><li>потренируйся показывать объект и сразу объяснять, чем он важен.</li></ul><p class="note">Точный список объектов зависит от записей в вашей тетради — страница не может заменить пометки учителя.</p></article>
+    </div>
+  </section>
+
+  <section class="lesson wrap" id="quiz">
+    <div class="lesson-head"><span class="step">Шаг 5</span><h2>Проверь себя</h2></div>
+    <div class="quiz">
+      <div id="quiz-round"><div class="quiz-top"><span id="quiz-progress"></span><span id="quiz-score"></span></div><h3 id="quiz-question"></h3><div class="options" id="quiz-options"></div><div class="actions"><button class="primary" id="check-answer" type="button" disabled>Проверить</button><button class="secondary" id="next-question" type="button" hidden>Дальше</button></div><p class="feedback" id="quiz-feedback" aria-live="polite" hidden></p></div>
+      <div class="finish" id="quiz-finish" hidden><strong id="finish-title">Готово!</strong><p id="finish-copy"></p><div class="actions" style="justify-content:center"><button class="primary" id="restart-quiz" type="button">Пройти ещё раз</button></div></div>
+    </div>
+  </section>
+</main>
+<footer class="source"><div class="wrap">Шпаргалка составлена по § 1 учебника «История Средних веков. 6 класс» В. Р. Мединского и А. О. Чубарьяна: <a href="https://my-uchebnik.ru/book/history/5/history-00000288.htm" rel="noreferrer">открыть учебник</a>. Ответы никуда не отправляются.</div></footer>
+<script>
+const layerNotes={origin:["Исходная область","Найди верховья Эльбы на западе и среднее течение Днепра на востоке. Между ними — область, откуда шло расселение."],routes:["Три направления","Часть славян двинулась на северо-запад, часть осваивала Восточно-Европейскую равнину, часть пошла на юг и в VI веке достигла Дуная."],branches:["Три ветви","По мере расселения группы обособлялись: сложились западные, восточные и южные славяне."],objects:["Ориентиры","Запомни взаимное положение четырёх рек и двух морей, затем пройди тренировку по номерам."]};
+const mapFrame=document.querySelector("#map-frame"),layerNote=document.querySelector("#layer-note"),drill=document.querySelector("#object-drill");
+document.querySelectorAll("[data-layer-button]").forEach(button=>button.addEventListener("click",()=>{const layer=button.dataset.layerButton;mapFrame.dataset.layer=layer;document.querySelectorAll("[data-layer-button]").forEach(item=>item.setAttribute("aria-pressed",String(item===button)));layerNote.innerHTML=`<strong>${layerNotes[layer][0]}</strong>${layerNotes[layer][1]}`;drill.hidden=layer!=="objects"}));
+const mapObjects=[{name:"Эльба",key:"elbe",number:1,hint:"Западная из четырёх рек."},{name:"Висла",key:"vistula",number:2,hint:"Река между Эльбой и Днепром."},{name:"Днепр",key:"dnieper",number:3,hint:"Восточная из четырёх рек."},{name:"Дунай",key:"danube",number:4,hint:"Река идёт с запада на восток южнее остальных."},{name:"Балтийское море",key:"baltic",number:5,hint:"Ищи море на севере схемы."},{name:"Чёрное море",key:"black",number:6,hint:"Ищи море на юго-востоке схемы."}];
+let objectIndex=0;
+const numberBox=document.querySelector(".number-buttons"),drillQuestion=document.querySelector("#drill-question"),drillFeedback=document.querySelector("#drill-feedback"),drillNext=document.querySelector("#drill-next");
+function renderObject(){const item=mapObjects[objectIndex];drillQuestion.textContent=`Какой цифрой обозначен объект «${item.name}»?`;drillFeedback.textContent="Выбери номер на схеме.";drillNext.hidden=true;numberBox.replaceChildren();mapFrame.querySelectorAll("[data-object]").forEach(node=>node.classList.remove("is-found"));for(let number=1;number<=6;number++){const button=document.createElement("button");button.type="button";button.className="number-button";button.textContent=number;button.addEventListener("click",()=>{if(number!==item.number){drillFeedback.textContent=`Не тот номер. Подсказка: ${item.hint}`;return}button.classList.add("is-right");mapFrame.querySelectorAll(`[data-object="${item.key}"]`).forEach(node=>node.classList.add("is-found"));drillFeedback.textContent="Верно — теперь покажи этот объект на своей карте.";drillNext.textContent=objectIndex===mapObjects.length-1?"Начать заново":"Следующий объект";drillNext.hidden=false;numberBox.querySelectorAll("button").forEach(x=>x.disabled=true)});numberBox.append(button)}}
+drillNext.addEventListener("click",()=>{objectIndex=(objectIndex+1)%mapObjects.length;renderObject()});renderObject();
+const questions=[
+  {q:"Между какими ориентирами находилась исходная область предков славян?",o:["Рейном и Волгой","Верховьями Эльбы и средним Днепром","Дунаем и Доном","Балтийским и Чёрным морями"],a:1,h:"Вспомни первую часть цепочки в шпаргалке.",e:"Учебник указывает область от верховьев Эльбы до среднего течения Днепра."},
+  {q:"Какой реки славяне достигли, двигаясь на юг в VI веке?",o:["Рейна","Волги","Дуная","Вислы"],a:2,h:"Эта река связана с южным направлением и Балканами.",e:"В VI веке южное направление расселения достигло Дуная."},
+  {q:"Какую территорию осваивала восточная группа?",o:["Скандинавию","Пиренейский полуостров","Восточно-Европейскую равнину","Британские острова"],a:2,h:"Название территории прямо связано с направлением.",e:"Одна из групп славян осваивала Восточно-Европейскую равнину."},
+  {q:"К западным славянам относятся…",o:["поляки, чехи, словаки","русские, украинцы, белорусы","болгары, сербы, хорваты","франки, готы, вандалы"],a:0,h:"Ориентир — Центральная Европа.",e:"Поляки, чехи и словаки относятся к западной ветви славян."},
+  {q:"К восточным славянам относятся…",o:["чехи, сербы, хорваты","русские, украинцы, белорусы","поляки, болгары, словаки","греки, римляне, германцы"],a:1,h:"Ориентир — Восточно-Европейская равнина.",e:"Русские, украинцы и белорусы относятся к восточной ветви славян."},
+  {q:"С чего лучше начинать ответ по исторической карте?",o:["С догадки о дате","С чтения легенды и поиска ориентиров","С перечисления всех стран","С описания цвета бумаги"],a:1,h:"Карта сама объясняет условные обозначения.",e:"Сначала читают легенду и находят устойчивые ориентиры: моря, реки и направления."}
+];
+let index=0,score=0,selected=null,answered=false;
+const q=document.querySelector("#quiz-question"),opts=document.querySelector("#quiz-options"),progress=document.querySelector("#quiz-progress"),scoreNode=document.querySelector("#quiz-score"),check=document.querySelector("#check-answer"),next=document.querySelector("#next-question"),feedback=document.querySelector("#quiz-feedback");
+function render(){selected=null;answered=false;const item=questions[index];progress.textContent=`Вопрос ${index+1} из ${questions.length}`;scoreNode.textContent=`Верно: ${score}`;q.textContent=item.q;opts.replaceChildren();item.o.forEach((label,i)=>{const button=document.createElement("button");button.type="button";button.className="option";button.textContent=label;button.setAttribute("aria-pressed","false");button.addEventListener("click",()=>{if(answered)return;selected=i;opts.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",String(x===button)));check.disabled=false});opts.append(button)});check.disabled=true;check.hidden=false;next.hidden=true;feedback.hidden=true}
+check.addEventListener("click",()=>{if(selected===null||answered)return;const item=questions[index];if(selected!==item.a){feedback.dataset.kind="wrong";feedback.textContent=`Подсказка: ${item.h}`;feedback.hidden=false;return}answered=true;score++;scoreNode.textContent=`Верно: ${score}`;feedback.dataset.kind="right";feedback.textContent=item.e;feedback.hidden=false;check.hidden=true;next.textContent=index===questions.length-1?"Результат":"Дальше";next.hidden=false});
+next.addEventListener("click",()=>{index++;if(index<questions.length)return render();document.querySelector("#quiz-round").hidden=true;document.querySelector("#quiz-finish").hidden=false;document.querySelector("#finish-title").textContent=score===questions.length?"К карте готов!":"Подготовка завершена";document.querySelector("#finish-copy").textContent=`${score} из ${questions.length}. ${score>=5?"Повтори объекты из тетради — и можно на работу.":"Ещё раз пройди цепочку и три ветви славян."}`});
+document.querySelector("#restart-quiz").addEventListener("click",()=>{index=0;score=0;document.querySelector("#quiz-round").hidden=false;document.querySelector("#quiz-finish").hidden=true;render()});render();
+</script>
+</body>
+</html>

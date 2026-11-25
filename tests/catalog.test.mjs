@@ -21,6 +21,15 @@ test("каталог содержит полный упорядоченный с
   assert.equal(math.lessons[0].slug, "trigonometriya");
 });
 
+test("каталог включает уроки по истории и литературе", async () => {
+  const subjects = await loadCatalog();
+  const lessonsBySubject = Object.fromEntries(
+    subjects.map(({ slug, lessons }) => [slug, lessons.map((lesson) => lesson.slug)])
+  );
+  assert.deepEqual(lessonsBySubject.history, ["rasselenie-slavyan"]);
+  assert.deepEqual(lessonsBySubject.literature, ["uznik"]);
+});
+
 test("slug урока уникален внутри предмета", async () => {
   const subjects = await loadCatalog();
   for (const subject of subjects) {
@@ -29,13 +38,17 @@ test("slug урока уникален внутри предмета", async () 
   }
 });
 
-test("урок содержит интерактивную самопроверку", async () => {
+test("каждый урок содержит интерактивную самопроверку", async () => {
   const subjects = await loadCatalog();
-  const lesson = subjects.find(({ slug }) => slug === "math").lessons[0];
-  const html = await readFile(path.join(lesson.sourceDirectory, "index.html"), "utf8");
-  assert.match(html, /id="quiz"/);
-  assert.match(html, /const questions = \[/);
-  assert.match(html, /addEventListener/);
+  const lessons = subjects.flatMap(({ lessons }) => lessons);
+  assert.equal(lessons.length, 3);
+  for (const lesson of lessons) {
+    const html = await readFile(path.join(lesson.sourceDirectory, "index.html"), "utf8");
+    assert.match(html, /id="quiz"/, lesson.slug);
+    assert.match(html, /const questions\s*=\s*\[/, lesson.slug);
+    assert.match(html, /addEventListener/, lesson.slug);
+    assert.match(html, /Пройти ещё раз|Ещё раз|Начать заново/, lesson.slug);
+  }
 });
 
 test("production-конфигурация закрепляет домен и атомарный выпуск", async () => {
