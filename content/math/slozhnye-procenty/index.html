@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; base-uri 'none'; form-action 'none'">
+<title>Сложные проценты</title>
+<style>
+:root{--paper:#f8f7f1;--ink:#192d29;--muted:#4d625a;--line:#d6ddd2;--white:#fffefa;--mint:#e8f2e8;--green:#24493a;--lime:#d9ec90;--purple:#6443a6;--purple-bg:#eee8fa;--wrong:#ad4325;--wrong-bg:#fbece3;--radius:24px}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:var(--ink);background:var(--paper);font:17px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;-webkit-font-smoothing:antialiased}h1,h2,h3,p,figure{margin:0}a{color:inherit;text-underline-offset:4px}button,input,select,summary{font:inherit}button,input[type="range"],select,summary{cursor:pointer}button{color:inherit}button:disabled{cursor:default}button,select{touch-action:manipulation}:focus-visible{outline:3px solid var(--purple);outline-offset:4px}[hidden]{display:none!important}.wrap{width:min(1120px,calc(100% - 48px));margin-inline:auto}.top{border-bottom:1px solid var(--line)}.top .wrap{display:flex;justify-content:space-between;align-items:center;min-height:67px;gap:16px}.home{display:inline-flex;align-items:center;gap:9px;font-weight:750;text-decoration:none;white-space:nowrap}.home-mark{display:inline-grid;place-items:center;width:33px;height:33px;border-radius:10px;background:var(--lime);color:var(--green)}nav{display:flex;flex-wrap:wrap;gap:10px 22px;font-size:.88rem}nav a{color:var(--muted);text-decoration:none}nav a:hover{text-decoration:underline}.hero{padding:clamp(38px,6vw,74px) 0 clamp(34px,5vw,56px)}.eyebrow{font-size:.85rem;font-weight:750;color:var(--muted);margin-bottom:14px}.hero h1{font-size:clamp(2.3rem,5.5vw,4.5rem);line-height:1.04;letter-spacing:-.06em;font-weight:850;text-wrap:balance}.hero>p:last-child{max-width:750px;margin-top:22px;font-size:clamp(1.05rem,2.5vw,1.25rem);color:var(--muted)}.lesson{padding-bottom:clamp(42px,6vw,72px);scroll-margin-top:22px}.lesson-head{display:flex;align-items:baseline;gap:12px;margin-bottom:16px}.step{font-size:.8rem;color:var(--green);font-weight:800;background:var(--lime);border-radius:999px;padding:3px 9px;white-space:nowrap}h2{font-size:clamp(1.45rem,3vw,2.2rem);letter-spacing:-.04em;line-height:1.15;font-weight:800;text-wrap:balance}h3{font-size:1.1rem;line-height:1.3;letter-spacing:-.02em}.lead{max-width:820px;color:var(--muted);margin-bottom:20px}.rule{border-left:3px solid #9bb756;padding-left:14px}.intro-grid{display:grid;grid-template-columns:1fr 1fr;gap:26px;align-items:start}.walkthrough{padding:24px;background:var(--mint);border:1px solid var(--line);border-radius:var(--radius)}.walkthrough p+p{margin-top:13px}.walkthrough small{display:block;color:var(--muted);font-size:.88rem}.equation{font-weight:780;font-variant-numeric:tabular-nums;letter-spacing:-.015em;overflow-wrap:break-word}.walkthrough .equation{font-size:1.22rem}.intro-copy>p+p{margin-top:12px}.muted{color:var(--muted)}.board{border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:var(--white)}.controls{display:grid;grid-template-columns:minmax(135px,.8fr) minmax(0,1fr) minmax(0,1fr);gap:20px;padding:24px 28px;background:var(--mint);border-bottom:1px solid var(--line)}.control{min-width:0}.control-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:7px}.control label{font-weight:730;font-size:.92rem}.control output{font-weight:820;font-size:1.25rem;color:var(--green);font-variant-numeric:tabular-nums}select{width:100%;min-height:44px;border:1px solid #a9bcae;border-radius:10px;color:var(--ink);background:var(--white);padding:7px 10px}.range{display:block;width:100%;height:36px;margin:0;accent-color:var(--green)}.range-limits{display:flex;justify-content:space-between;color:var(--muted);font-size:.78rem}.mode-row{grid-column:1/-1;display:flex;align-items:center;flex-wrap:wrap;gap:8px 12px;margin-top:-5px}.mode-row>span{font-size:.9rem;font-weight:720}.pill{min-height:44px;border:1px solid var(--line);background:var(--white);border-radius:999px;padding:7px 13px;font-size:.88rem;font-weight:730}.pill:hover{border-color:var(--green)}.pill[aria-pressed="true"]{background:var(--green);border-color:var(--green);color:#fff}.model-content{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr)}.timeline{padding:23px 28px 27px;background:#f0f5ea;min-width:0}.chart-title{font-weight:750;font-size:.95rem;margin-bottom:8px}.year-row{display:grid;grid-template-columns:45px minmax(0,1fr);gap:12px;padding:11px 0;border-top:1px solid #d7e1d4;align-items:start}.year-label{font-size:.79rem;color:var(--muted);font-weight:700;padding-top:1px}.balance{display:block;font-weight:800;font-size:1rem;line-height:1.25;font-variant-numeric:tabular-nums;margin-bottom:7px}.bar-track{height:13px;background:#dce6d7;border-left:1px solid #809787;overflow:hidden;border-radius:0 3px 3px}.bar-fill{height:100%;background:var(--green);border-radius:0 3px 3px}.bar-fill.last{background:var(--purple)}.row-detail{display:flex;flex-wrap:wrap;gap:3px 12px;font-size:.8rem;color:var(--muted);margin-top:5px;line-height:1.4}.year-row:last-child{background:#e5eedc;border-radius:10px;margin:3px -7px 0;padding:11px 7px}.chart-note{font-size:.8rem;color:var(--muted);margin-top:14px}.guide{padding:25px 28px;min-width:0}.guide>p{margin-top:10px}.calc{padding:16px 0;border-bottom:1px solid var(--line)}.calc dl{margin:0;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 12px;font-size:.92rem}.calc dt{color:var(--muted)}.calc dd{margin:0;font-weight:760;font-variant-numeric:tabular-nums;white-space:nowrap}.calculation{margin-top:15px;font-size:1.12rem;line-height:1.5}.total{font-weight:780;margin-top:18px;font-size:1.12rem}.total-change{font-size:.94rem;margin-top:8px}.rate-note{padding-top:13px;margin-top:13px;border-top:1px solid var(--line);font-size:.9rem;color:var(--muted)}.rounding{color:var(--muted);font-size:.8rem;margin-top:12px}.worked{margin-top:19px;max-width:900px}.worked p+p{margin-top:8px}.formula-board{border:1px solid var(--line);background:var(--white);border-radius:var(--radius);overflow:hidden}.formula-top{display:grid;grid-template-columns:1fr 1fr}.formula-part{padding:22px 26px}.formula-part+.formula-part{border-left:1px solid var(--line)}.formula-part p{margin-top:10px}.formula-part .equation{font-size:1.17rem}.formula-main{padding:21px 26px;background:var(--mint);border-top:1px solid var(--line)}.formula-main .equation{font-size:clamp(1.2rem,2.7vw,1.65rem);line-height:1.7}.formula-main>p+p{margin-top:9px}.notation{font-size:.91rem;color:var(--muted);margin-top:14px}.notation p+p{margin-top:7px}.example{margin-top:20px;padding:20px 24px;border:1px solid var(--line);border-radius:18px;background:var(--white)}.example p{margin-top:10px}.example .equation{font-size:1.13rem}.example .pill{margin-top:13px}.extra{border:1px solid var(--line);border-radius:16px;background:var(--white);margin-top:12px}.extra summary{padding:15px 19px;font-weight:750;line-height:1.4}.extra-content{padding:0 19px 18px}.extra-content p+p{margin-top:9px}.extra-content .equation{font-size:1.08rem}.extra-content .muted{font-size:.92rem}.quiz{border-radius:var(--radius);background:#e7efe2;padding:clamp(18px,4vw,36px);border:1px solid #c9d9c7}.quiz-meta{color:var(--muted);font-size:.88rem;font-weight:750;margin-bottom:10px}.quiz h3{font-size:clamp(1.16rem,2.5vw,1.5rem);line-height:1.4;max-width:850px}.options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:21px 0 14px}.option{min-height:52px;border:1px solid var(--line);border-radius:12px;background:var(--white);padding:10px;font-weight:750}.option:hover{border-color:var(--green)}.option[data-result="right"]{color:#fff;background:var(--green);border-color:var(--green)}.option[data-result="wrong"]{border-color:var(--wrong);background:var(--wrong-bg)}.feedback{min-height:1.55em;font-weight:680;max-width:850px}.feedback[data-result="wrong"]{color:#78351f}.next{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:9px 18px;margin-top:16px;border:1px solid var(--green);border-radius:999px;background:var(--green);color:#fff;font-weight:750}.next:hover{background:#17362a}.next:disabled{border-color:#bacbbb;background:#d8e5d6;color:#4d625a}.sources{font-size:.86rem;color:var(--muted);padding-bottom:32px}.sources p+p{margin-top:7px}.sources a{overflow-wrap:anywhere}footer{border-top:1px solid var(--line);padding:19px 0 27px;color:var(--muted);font-size:.9rem}.noscript{padding:20px;border:1px solid var(--wrong);background:var(--wrong-bg);margin-bottom:24px}
+@media(max-width:800px){.wrap{width:calc(100% - 30px)}.top .wrap{align-items:flex-start;flex-direction:column;gap:9px;padding:11px 0 13px}nav{gap:8px 18px}.model-content{grid-template-columns:minmax(0,1fr)}.timeline{padding:22px}.guide{padding:22px;border-top:1px solid var(--line)}.controls{padding:21px 22px;gap:16px}.intro-grid{gap:22px}}
+@media(max-width:540px){.hero h1{font-size:clamp(2.25rem,10.2vw,3rem)}.lesson-head{align-items:flex-start;gap:10px}.lesson-head .step{margin-top:2px}.intro-grid,.formula-top{grid-template-columns:minmax(0,1fr)}.walkthrough{padding:20px}.controls{grid-template-columns:minmax(0,1fr) minmax(0,1fr);padding:19px 18px;gap:15px}.control:first-child{grid-column:1/-1;display:grid;grid-template-columns:1fr minmax(0,1fr);align-items:center;gap:12px}.control:first-child .control-head{margin-bottom:0}.mode-row{margin-top:0;gap:8px}.mode-row>span{width:100%}.timeline{padding:19px 18px 21px}.year-row{grid-template-columns:38px minmax(0,1fr);gap:10px}.year-label{font-size:.75rem}.guide{padding:21px 18px}.calc dl{font-size:.87rem}.calculation{font-size:1.05rem}.formula-part,.formula-main{padding:20px}.formula-part+.formula-part{border-left:0;border-top:1px solid var(--line)}.formula-main .equation{font-size:1.22rem}.example{padding:19px}.options{grid-template-columns:minmax(0,1fr)}.extra summary{padding:14px 16px}.extra-content{padding:0 16px 17px}.sources{font-size:.83rem}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body id="top">
+<header class="top"><div class="wrap"><a class="home" href="../../"><span class="home-mark" aria-hidden="true">%</span> Школьные темы</a><nav aria-label="Разделы урока"><a href="#base">Новая база</a><a href="#model">Модель</a><a href="#quiz">Самопроверка</a></nav></div></header>
+<main class="wrap">
+  <div class="hero"><p class="eyebrow">Математика · 6 класс · 15 минут</p><h1>Сложные проценты</h1><p>После каждого начисления сумма меняется. Следующий процент считают уже от неё. Проследи эту цепочку, запиши её одной формулой и реши задачи на рост и снижение.</p></div>
+  <noscript><p class="noscript">Для изменения модели и самопроверки нужен JavaScript. Объяснения и разобранные примеры доступны ниже.</p></noscript>
+  <section class="lesson" id="base" aria-labelledby="base-heading">
+    <div class="lesson-head"><span class="step">Шаг 1</span><h2 id="base-heading">Что становится новой базой?</h2></div>
+    <div class="intro-grid"><div class="walkthrough"><p><small>Первый год: 10% от 1 000 ₽ равны 100 ₽.</small><span class="equation">1 000 + 100 = 1 100 ₽</span></p><p><small>Второй год: 10% уже от 1 100 ₽ равны 110 ₽.</small><span class="equation">1 100 + 110 = 1 210 ₽</span></p></div><div class="intro-copy"><p class="rule"><strong>База процента</strong>: величина, которую сейчас принимают за 100%. При сложных процентах это сумма после предыдущего начисления.</p><p>Если прибавку оставляют в сумме, в следующий раз процент начисляют и на неё. Так появляется выражение «проценты на проценты».</p><p class="muted">Короткое отличие: при простых процентах база остаётся первоначальной; при сложных используют результат предыдущего шага.</p></div></div>
+  </section>
+  <section class="lesson" id="model" aria-labelledby="model-heading">
+    <div class="lesson-head"><span class="step">Шаг 2</span><h2 id="model-heading" tabindex="-1">Как меняется сумма по годам?</h2></div>
+    <p class="lead">В каждой строке видны новая сумма, база и изменение за год. Измени ставку или срок, затем переключись на уменьшение.</p>
+    <div class="board"><div class="controls">
+      <div class="control"><div class="control-head"><label for="principal">Исходная сумма</label></div><select id="principal"><option value="1000">1 000 ₽</option><option value="5000">5 000 ₽</option><option value="12000">12 000 ₽</option></select></div>
+      <div class="control"><div class="control-head"><label for="rate">Процент за год</label><output id="rate-value" for="rate">10%</output></div><input class="range" id="rate" type="range" min="0" max="20" step="1" value="10"><div class="range-limits" aria-hidden="true"><span>0%</span><span>20%</span></div></div>
+      <div class="control"><div class="control-head"><label for="years">Число лет</label><output id="years-value" for="years">3</output></div><input class="range" id="years" type="range" min="1" max="5" step="1" value="3"><div class="range-limits" aria-hidden="true"><span>1 год</span><span>5 лет</span></div></div>
+      <div class="mode-row" role="group" aria-label="Направление изменения"><span>Сумма каждый год</span><button class="pill mode" type="button" data-direction="1" aria-pressed="true">Увеличивается</button><button class="pill mode" type="button" data-direction="-1" aria-pressed="false">Уменьшается</button><button class="pill" id="model-reset" type="button">Исходный пример</button></div>
+    </div><div class="model-content">
+      <figure class="timeline" aria-labelledby="chart-caption"><p class="chart-title">Сумма после каждого года</p><div id="chart-rows"></div><figcaption class="chart-note" id="chart-caption">Полосы начинаются от нуля и имеют общий масштаб. База каждого года совпадает с итогом предыдущего.</figcaption></figure>
+      <div class="guide"><h3 id="last-step-title">Третий год по шагам</h3><div class="calc"><dl><dt>База этого года</dt><dd id="last-base"></dd><dt id="change-label">10% от базы</dt><dd id="last-change"></dd><dt>Множитель за год</dt><dd id="factor"></dd></dl><p class="calculation equation" id="last-calculation"></p></div><div role="status" aria-live="polite"><p class="total" id="model-total"></p><p class="total-change" id="model-change"></p><p class="rate-note" id="model-rate-note"></p></div><p class="rounding">Числа со знаком ≈ округлены только для показа. Все дальнейшие вычисления используют точные промежуточные значения.</p></div>
+    </div></div>
+    <div class="worked"><p><strong>Исходный пример:</strong> 1 000 → 1 100 → 1 210 → 1 331 ₽. Прибавки составляют 100 ₽, 110 ₽ и 121 ₽.</p><p>За три года итог равен <strong>1 331 ₽</strong>, прирост равен <strong>331 ₽</strong>, или <strong>33,1%</strong> от исходной суммы. Ставка каждого года при этом остаётся 10%.</p></div>
+  </section>
+  <section class="lesson" id="formula" aria-labelledby="formula-heading">
+    <div class="lesson-head"><span class="step">Шаг 3</span><h2 id="formula-heading">Зачем здесь степень?</h2></div>
+    <p class="lead">Процент считают от всей текущей суммы. Поэтому каждый новый шаг повторяет одно умножение.</p>
+    <div class="formula-board"><div class="formula-top"><div class="formula-part"><h3>Увеличение на 10%</h3><p>Сохраняем 100% и добавляем 10%. Получаем 110%, то есть 1,1 от прежней суммы.</p><p class="equation">1 000 · 1,1 · 1,1 · 1,1<br>= 1 000 · 1,1³ = 1 331 ₽</p></div><div class="formula-part"><h3>Уменьшение на 20%</h3><p>Остаётся 80% текущей суммы. Каждый раз умножаем на 0,8.</p><p class="equation">1 000 · 0,8³ = 512 ₽</p><p>Осталось 51,2% начальной суммы. Снижение: 100% − 51,2% = <strong>48,8%</strong>.</p></div></div><div class="formula-main"><p class="equation" aria-label="При росте: итоговая сумма равна исходной сумме, умноженной на скобку один плюс p разделить на сто в степени n.">Рост: S<sub>n</sub> = S · (1 + p / 100)<sup>n</sup></p><p class="equation" aria-label="При уменьшении: итоговая сумма равна исходной сумме, умноженной на скобку один минус p разделить на сто в степени n.">Снижение: S<sub>n</sub> = S · (1 − p / 100)<sup>n</sup></p><p>Степень n означает, что одинаковый множитель используется n раз.</p></div></div>
+    <div class="notation"><p><strong>S</strong>: исходная сумма; <strong>S<sub>n</sub></strong>: итог; <strong>p</strong>: число процентов за один период; <strong>n</strong>: число завершённых периодов начисления. Для 10% подставляем p = 10.</p><p>Ставка и период должны соответствовать друг другу. При начислении 2% каждый месяц за три месяца будет S · 1,02³. Общий процент изменения равен (S<sub>n</sub> : S − 1) · 100%; знак «минус» означает снижение.</p></div>
+    <div class="example"><h3>Пример из учебника</h3><p>Сумма 5 000 ₽ увеличивается на 8% от текущего значения каждый год. За пять лет:</p><p class="equation">5 000 · 1,08⁵ = 7 346,640384<br>≈ 7 346,64 ₽</p><p class="muted">Это вся сумма. Прирост составляет примерно 2 346,64 ₽.</p><button class="pill" id="textbook-example" type="button">Показать в модели</button></div>
+  </section>
+  <section class="lesson" id="tasks" aria-labelledby="tasks-heading">
+    <div class="lesson-head"><span class="step">Шаг 4</span><h2 id="tasks-heading">Как решать изменения подряд?</h2></div>
+    <p class="lead">Если каждый процент считают от нового значения, последовательно применяй множители. Для обратной задачи выполняй обратные действия.</p>
+    <details class="extra" open><summary>После роста на 20% цена снизилась на 20%</summary><div class="extra-content"><p>Второй процент считают от увеличенной цены. Прибавка и скидка получаются разными:</p><p class="equation">1 000 · 1,2 · 0,8 = 960 ₽</p><p class="muted">Множитель всего изменения: 1,2 · 0,8 = 0,96. Осталось 96% исходной цены; снижение составило 4%.</p></div></details>
+    <details class="extra"><summary>Известен итог, нужно найти исходную сумму</summary><div class="extra-content"><p>После двух начислений по 10% от текущей суммы получилось 1 210 ₽. Исходную сумму умножили на 1,1 дважды:</p><p class="equation">S · 1,1² = 1 210<br>S = 1 210 : 1,1² = 1 000 ₽</p><p class="muted">Чтобы вернуться к началу, делим на весь множитель. Вычитание 20% из конечной суммы не отменяет два начисления по 10%.</p></div></details>
+    <details class="extra"><summary>Округление выполняется в конце расчёта</summary><div class="extra-content"><p>Если условие просит округлить только ответ, сохрани промежуточные значения целиком. Например:</p><p class="equation">1 000 · 1,025³ = 1 076,890625<br>≈ 1 076,89 ₽</p><p class="muted">До копеек оставляют два знака после запятой. До рублей округляют до целого числа; до тысяч: к ближайшей тысяче. Если условие отдельно требует округлять каждое начисление, выполняй это требование.</p></div></details>
+  </section>
+  <section class="lesson" id="quiz" aria-labelledby="quiz-heading">
+    <div class="lesson-head"><span class="step">Шаг 5</span><h2 id="quiz-heading">Проверь себя</h2></div>
+    <p class="lead">Семь задач о сложных процентах. После ошибки можно исправить ответ. Подсказка укажет следующий шаг.</p>
+    <div class="quiz"><p class="quiz-meta" id="quiz-progress"></p><h3 id="question"></h3><div class="options" id="options" role="group" aria-labelledby="question"></div><p class="feedback" id="feedback" role="status"></p><button class="next" id="quiz-next" type="button" disabled>Дальше</button></div>
+  </section>
+  <aside class="sources" aria-label="Учебник и дополнительная практика"><p>По учебнику Г. В. Дорофеева и Л. Г. Петерсон «Математика. 6 класс. Часть 1», Ювента, 2010. Глава 2, § 2, пункт 4 «Сложный процентный рост», с. 105–108. Объяснения и самопроверка составлены для этого урока.</p><p><a href="https://drive.google.com/file/d/0B2YH4n-p-TLDcFB0SGQ3cEljMEU/view?resourcekey=0-qXyD3TnKggx_-Z1FdV1Y9Q" target="_blank" rel="noopener noreferrer">Открыть PDF первой части в Google Drive</a>. Это печатные страницы; в PDF им соответствуют страницы 107–110.</p><p>Дополнительная практика: № 462 на с. 107, рост; № 467 на с. 108, снижение; № 464 на с. 107, обратная задача с округлением до тысяч.</p></aside>
+</main>
+<footer><div class="wrap"><a href="../../">← Все предметы</a> · <a href="#top">К началу урока ↑</a></div></footer>
+<script>
+(() => {
+  "use strict";
+  const find = (id) => document.getElementById(id);
+  const formatter = new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 2 });
+  const isRounded = (value) => Math.abs(value - Math.round(value * 100) / 100) > 1e-7;
+  const number = (value) => formatter.format(Math.abs(value) < 1e-9 ? 0 : value);
+  const shown = (value) => `${isRounded(value) ? "≈ " : ""}${number(value)}`;
+  const money = (value) => `${shown(value)} ₽`;
+  const signedMoney = (value, sign) => Math.abs(value) < 1e-9 ? money(0) : `${isRounded(value) ? "≈ " : ""}${sign}${number(value)} ₽`;
+  const yearsWord = (count) => count === 1 ? "год" : count < 5 ? "года" : "лет";
+  let direction = 1;
+
+  function updateModel() {
+    const initial = Number(find("principal").value);
+    const rate = Number(find("rate").value);
+    const count = Number(find("years").value);
+    const factor = 1 + direction * rate / 100;
+    const balances = Array.from({ length: count + 1 }, (_, n) => initial * factor ** n);
+    const scale = Math.max(...balances);
+    const sign = direction === 1 ? "+" : "−";
+    find("rate-value").textContent = `${rate}%`;
+    find("years-value").textContent = count;
+    find("rate").setAttribute("aria-valuetext", `${rate} процентов за год`);
+    find("years").setAttribute("aria-valuetext", `${count} ${yearsWord(count)}`);
+    document.querySelectorAll(".mode").forEach((button) => button.setAttribute("aria-pressed", Number(button.dataset.direction) === direction ? "true" : "false"));
+    const rows = find("chart-rows");
+    rows.replaceChildren();
+    for (let n = 0; n <= count; n += 1) {
+      const base = n > 0 ? balances[n - 1] : initial;
+      const change = n > 0 ? base * rate / 100 : 0;
+      const row = document.createElement("div");
+      row.className = "year-row";
+      row.setAttribute("role", "img");
+      row.setAttribute("aria-label", n === 0 ? `Исходная сумма ${money(initial)}.` : `К концу ${n}-го года: база ${money(base)}, ${direction === 1 ? "прибавка" : "уменьшение"} ${money(change)}, итог ${money(balances[n])}.`);
+      row.innerHTML = `<span class="year-label" aria-hidden="true">${n === 0 ? "Старт" : `Год ${n}`}</span><div aria-hidden="true"><span class="balance">${money(balances[n])}</span><div class="bar-track"><div class="bar-fill${n === count ? " last" : ""}" style="width:${balances[n] / scale * 100}%"></div></div><span class="row-detail">${n === 0 ? "Начальная сумма" : `<span>База: ${money(base)}</span><span>${signedMoney(change, sign)}</span>`}</span></div>`;
+      rows.append(row);
+    }
+    const base = balances[count - 1];
+    const change = base * rate / 100;
+    const final = balances[count];
+    const totalChange = final - initial;
+    const totalPercent = totalChange / initial * 100;
+    find("last-step-title").textContent = `${count}-й год по шагам`;
+    find("last-base").textContent = money(base);
+    find("change-label").textContent = `${rate}% от базы`;
+    find("last-change").textContent = signedMoney(change, sign);
+    find("factor").textContent = number(factor);
+    const approximate = [base, change, final].some(isRounded);
+    find("last-calculation").textContent = `${number(base)} ${sign} ${number(change)} ${approximate ? "≈" : "="} ${number(final)} ₽`;
+    find("model-total").textContent = `Итог: ${money(final)}.`;
+    if (Math.abs(totalChange) < 1e-7) {
+      find("model-change").textContent = "Изменение от начала: 0 ₽, или 0%.";
+      find("model-rate-note").textContent = "При ставке 0% после каждого периода остаётся та же сумма.";
+    } else {
+      find("model-change").textContent = `${direction === 1 ? "Прирост" : "Снижение"} от начала: ${money(Math.abs(totalChange))}, или ${shown(Math.abs(totalPercent))}%.`;
+      find("model-rate-note").textContent = `Ставка за один год: ${rate}%. За ${count} ${yearsWord(count)} общее ${direction === 1 ? "увеличение" : "снижение"}: ${shown(Math.abs(totalPercent))}%. ${count === 1 ? "За один период эти проценты совпадают." : "Процент каждого следующего года берут от новой базы."}`;
+    }
+  }
+
+  ["principal", "rate", "years"].forEach((id) => find(id).addEventListener("input", updateModel));
+  document.querySelectorAll(".mode").forEach((button) => button.addEventListener("click", () => { direction = Number(button.dataset.direction); updateModel(); }));
+  function setExample(initial, rate, count) {
+    find("principal").value = initial;
+    find("rate").value = rate;
+    find("years").value = count;
+    direction = 1;
+    updateModel();
+  }
+  find("model-reset").addEventListener("click", () => setExample(1000, 10, 3));
+  find("textbook-example").addEventListener("click", () => {
+    setExample(5000, 8, 5);
+    find("model-heading").focus({ preventScroll: true });
+    find("model").scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
+  });
+
+  const questions = [
+    { text: "В начале было 1 000 ₽. После первого начисления 10% стало 1 100 ₽. От какой суммы считают следующие 10% при сложных процентах?", options: ["От 1 000 ₽", "От 1 100 ₽", "От 100 ₽"], correct: 1, hint: "Первая прибавка осталась в сумме. Базой следующего начисления становится весь результат предыдущего.", explanation: "Верно. Новая база равна 1 100 ₽. Следующие 10% составят 110 ₽." },
+    { text: "Цена каждый год снижается на 20% от текущего значения. На какое число нужно умножать её каждый год?", options: ["На 0,2", "На 1,2", "На 0,8"], correct: 2, hint: "Вся текущая цена составляет 100%. Вычти 20% и переведи оставшуюся долю в десятичную дробь.", explanation: "Верно. Остаётся 80% текущей цены: 80 : 100 = 0,8." },
+    { text: "Сумма 1 000 ₽ два года подряд растёт на 10% от текущей суммы. Каков итог?", options: ["1 210 ₽", "1 200 ₽", "210 ₽"], correct: 0, hint: "Сначала найди итог первого года. Во втором году используй именно его как новую базу.", explanation: "Верно. 1 000 · 1,1 · 1,1 = 1 210 ₽. 210 ₽ составляют прирост, а не всю сумму." },
+    { text: "Величина три года подряд уменьшается на 20% от текущего значения. На сколько процентов она уменьшилась по сравнению с началом?", options: ["На 60%", "На 51,2%", "На 48,8%"], correct: 2, hint: "Сначала найди, какая доля осталась после трёх умножений на 0,8. Затем сравни оставшуюся долю со 100%.", explanation: "Верно. 0,8³ = 0,512. Осталось 51,2%, поэтому снижение составляет 100% − 51,2% = 48,8%." },
+    { text: "Цена 1 000 ₽ выросла на 20%, затем снизилась на 20% от новой цены. Какой стал итог?", options: ["1 000 ₽", "960 ₽", "800 ₽"], correct: 1, hint: "После повышения появилась новая база для снижения. Последовательно примени множитель роста и множитель снижения.", explanation: "Верно. 1 000 · 1,2 · 0,8 = 960 ₽. Второе изменение считают от 1 200 ₽." },
+    { text: "После двух начислений по 10% от текущей суммы получилось 1 210 ₽. Сколько было в начале?", options: ["1 000 ₽", "980,10 ₽", "1 100 ₽"], correct: 0, hint: "При движении вперёд сумму дважды умножали на 1,1. Для возвращения к началу выполни обратные действия.", explanation: "Верно. 1 210 : 1,1² = 1 210 : 1,21 = 1 000 ₽." },
+    { text: "Без округления получили: 1 000 · 1,025³ = 1 076,890625 ₽. Округли итог до копеек.", options: ["1 076,90 ₽", "1 076,89 ₽", "1 076,80 ₽"], correct: 1, hint: "Копейкам соответствуют два знака после запятой. Решение об округлении зависит от следующего, третьего знака.", explanation: "Верно. Третий знак равен 0, поэтому сотые не увеличиваем: ≈ 1 076,89 ₽. Промежуточные значения не округляли." }
+  ];
+  let questionIndex = 0;
+  let answered = false;
+  function showQuestion() {
+    const question = questions[questionIndex];
+    const next = find("quiz-next");
+    find("options").replaceChildren();
+    find("feedback").textContent = "";
+    delete find("feedback").dataset.result;
+    answered = false;
+    if (!question) {
+      find("quiz-progress").textContent = `Пройдено ${questions.length} из ${questions.length}`;
+      find("question").textContent = "Урок пройден";
+      find("feedback").textContent = "При сложных процентах следующее начисление берут от последней суммы. Повторяющиеся множители записывают степенью. Общий процент изменения считают относительно самого начала.";
+      next.textContent = "Пройти ещё раз";
+      next.disabled = false;
+      return;
+    }
+    find("quiz-progress").textContent = `Вопрос ${questionIndex + 1} из ${questions.length}`;
+    find("question").textContent = question.text;
+    next.textContent = questionIndex === questions.length - 1 ? "Завершить" : "Дальше";
+    next.disabled = true;
+    question.options.forEach((option, index) => {
+      const button = document.createElement("button");
+      button.className = "option";
+      button.type = "button";
+      button.textContent = option;
+      button.addEventListener("click", () => {
+        if (answered) return;
+        const correct = question.correct === index;
+        find("options").querySelectorAll("button").forEach((candidate) => {
+          delete candidate.dataset.result;
+          if (correct) candidate.setAttribute("aria-disabled", "true");
+        });
+        button.dataset.result = correct ? "right" : "wrong";
+        find("feedback").dataset.result = correct ? "right" : "wrong";
+        find("feedback").textContent = correct ? question.explanation : `Пока неверно. ${question.hint}`;
+        answered = correct;
+        next.disabled = !correct;
+      });
+      find("options").append(button);
+    });
+  }
+  find("quiz-next").addEventListener("click", () => {
+    questionIndex = questionIndex === questions.length ? 0 : questionIndex + 1;
+    showQuestion();
+    (find("options").querySelector("button") || find("quiz-next")).focus();
+  });
+  updateModel();
+  showQuestion();
+})();
+</script>
+</body>
+</html>
