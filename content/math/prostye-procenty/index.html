@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; base-uri 'none'; form-action 'none'">
+<title>Простые проценты</title>
+<style>
+:root{--paper:#f8f7f1;--ink:#192d29;--muted:#4d625a;--line:#d6ddd2;--white:#fffefa;--mint:#e8f2e8;--green:#24493a;--lime:#d9ec90;--accent:#14624f;--focus:#6443a6;--wrong:#ad4325;--wrong-bg:#fbece3;--radius:24px}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;color:var(--ink);background:var(--paper);font:17px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+h1,h2,h3,p,figure{margin:0}
+a{color:inherit;text-underline-offset:4px}
+button,input,select,summary{font:inherit}
+button,input[type="range"],select,summary{cursor:pointer}
+button{color:inherit}
+button:disabled{cursor:default}
+button,select{touch-action:manipulation}
+:focus-visible{outline:3px solid var(--focus);outline-offset:4px}
+[hidden]{display:none!important}
+.wrap{width:min(1120px,calc(100% - 48px));margin-inline:auto}
+.top{border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;justify-content:space-between;align-items:center;min-height:67px;gap:16px}
+.home{display:inline-flex;align-items:center;gap:9px;font-weight:750;text-decoration:none;white-space:nowrap}
+.home-mark{display:inline-grid;place-items:center;width:33px;height:33px;border-radius:10px;background:var(--lime);color:var(--green)}
+nav{display:flex;flex-wrap:wrap;gap:10px 22px;font-size:.88rem}
+nav a{color:var(--muted);text-decoration:none}
+nav a:hover{text-decoration:underline}
+.hero{padding:clamp(38px,6vw,74px) 0 clamp(34px,5vw,56px)}
+.eyebrow{font-size:.85rem;font-weight:750;color:var(--muted);margin-bottom:14px}
+.hero h1{max-width:980px;font-size:clamp(2.3rem,5.5vw,4.5rem);line-height:1.04;letter-spacing:-.06em;font-weight:850;text-wrap:balance}
+.hero>p:last-child{max-width:760px;margin-top:22px;font-size:clamp(1.05rem,2.5vw,1.25rem);color:var(--muted)}
+.lesson{padding-bottom:clamp(42px,6vw,72px);scroll-margin-top:22px}
+.lesson-head{display:flex;align-items:baseline;gap:12px;margin-bottom:16px}
+.step{font-size:.8rem;color:var(--green);font-weight:800;background:var(--lime);border-radius:999px;padding:3px 9px;white-space:nowrap}
+h2{font-size:clamp(1.45rem,3vw,2.2rem);letter-spacing:-.04em;line-height:1.15;font-weight:800;text-wrap:balance}
+h3{font-size:1.1rem;line-height:1.3;letter-spacing:-.02em}
+.lead{max-width:800px;color:var(--muted);margin-bottom:20px}
+.rule{border-left:3px solid #9bb756;padding-left:14px}
+.intro-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:26px;align-items:center}
+.percent-strip{background:var(--mint);border:1px solid var(--line);border-radius:var(--radius);padding:24px}
+.whole{font-size:1.5rem;font-weight:820;letter-spacing:-.03em}
+.ten-parts{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:4px;margin:16px 0 12px}
+.ten-parts span{height:26px;background:#cadccc;border-radius:3px}
+.ten-parts span:first-child{background:var(--accent)}
+.percent-strip small{display:block;color:var(--muted);font-size:.86rem;margin-top:6px}
+.intro-copy>p+p{margin-top:12px}
+.equation{font-variant-numeric:tabular-nums;font-weight:780;letter-spacing:-.015em;overflow-wrap:break-word}
+.intro-copy .equation{font-size:1.15rem}
+.board{border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:var(--white)}
+.controls{display:grid;grid-template-columns:minmax(135px,.8fr) minmax(0,1fr) minmax(0,1fr);gap:20px;padding:24px 28px;background:var(--mint);border-bottom:1px solid var(--line)}
+.control{min-width:0}
+.control-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:7px}
+.control label{font-weight:730;font-size:.92rem}
+.control output{font-weight:820;font-size:1.25rem;color:var(--green);font-variant-numeric:tabular-nums}
+select{width:100%;min-height:44px;border:1px solid #a9bcae;border-radius:10px;color:var(--ink);background:var(--white);padding:7px 10px}
+.range{display:block;width:100%;height:36px;margin:0;accent-color:var(--green)}
+.range-limits{display:flex;justify-content:space-between;color:var(--muted);font-size:.78rem}
+.mode-row{grid-column:1/-1;display:flex;align-items:center;flex-wrap:wrap;gap:8px 12px;margin-top:-5px}
+.mode-row>span{font-size:.9rem;font-weight:720}
+.pill{min-height:44px;border:1px solid var(--line);background:var(--white);border-radius:999px;padding:7px 13px;font-size:.88rem;font-weight:730}
+.pill:hover{border-color:var(--green)}
+.pill[aria-pressed="true"]{background:var(--green);border-color:var(--green);color:#fff}
+.model-content{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(0,1fr)}
+.timeline{padding:25px 28px 27px;background:#f0f5ea;min-width:0}
+.chart-head,.year-row{display:grid;grid-template-columns:45px minmax(0,1fr);gap:14px}
+.chart-head{align-items:end;font-size:.85rem;font-weight:750;margin-bottom:12px;color:var(--muted)}
+.year-row{align-items:center;padding:11px 0;border-top:1px solid #d7e1d4}
+.year-label{font-size:.82rem;color:var(--muted);font-weight:680}
+.row-values{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:7px}
+.balance{font-weight:800;font-size:1rem;line-height:1.2;font-variant-numeric:tabular-nums;white-space:nowrap}
+.change{color:var(--accent);font-size:.8rem;font-weight:750;white-space:nowrap}
+.bar-track{height:14px;background:#dce6d7;border-left:1px solid #809787;overflow:hidden;border-radius:0 3px 3px}
+.bar-fill{height:100%;background:var(--accent);border-radius:0 3px 3px}
+.year-row:last-child{background:#e5eedc;border-radius:10px;margin:3px -7px 0;padding:12px 7px}
+.chart-note{font-size:.81rem;color:var(--muted);margin-top:14px}
+.guide{padding:25px 28px;min-width:0}
+.guide-intro{font-size:.93rem;color:var(--muted);margin-top:9px}
+.model-stats{margin:19px 0 0}
+.stat{display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding:10px 0;border-top:1px solid var(--line)}
+.stat dt{color:var(--muted);font-size:.9rem}
+.stat dd{margin:0;white-space:nowrap;font-weight:800;font-variant-numeric:tabular-nums}
+.stat.total{margin-top:4px;padding-top:13px}
+.stat.total dt,.stat.total dd{color:var(--green);font-size:1.06rem;font-weight:800}
+.calculation{margin-top:14px;font-size:1rem;font-weight:780;overflow-wrap:break-word}
+.model-result{font-size:.91rem;margin-top:13px;min-height:3.1em}
+.worked{margin-top:19px;color:var(--muted);font-size:.94rem}
+.worked strong{color:var(--ink)}
+.formula-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);background:var(--white);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+.formula{padding:24px 28px;min-width:0}
+.formula+.formula{border-left:1px solid var(--line)}
+.formula h3{color:var(--accent)}
+.formula .equation{font-size:clamp(1.05rem,2.2vw,1.3rem);line-height:1.7;margin-top:12px}
+.formula p{margin-top:10px;color:var(--muted);font-size:.93rem}
+.formula .concrete{font-weight:730;color:var(--ink)}
+.notation{margin-top:15px;font-size:.91rem;color:var(--muted)}
+.notation p+p{margin-top:7px}
+.example{margin-top:22px;padding:20px 24px;background:var(--mint);border-radius:18px;border:1px solid var(--line)}
+.example>p{margin-top:9px}
+.example .equation{font-size:1.12rem}
+.example .pill{margin-top:14px}
+.extra{border:1px solid var(--line);border-radius:16px;background:var(--white);margin-top:12px}
+.extra summary{padding:15px 19px;font-weight:750;line-height:1.4}
+.extra-content{padding:0 19px 18px}
+.extra-content p+p{margin-top:9px}
+.extra-content .equation{font-size:1.08rem}
+.extra-content .muted{font-size:.92rem;color:var(--muted)}
+.quiz{border-radius:var(--radius);background:#e7efe2;padding:clamp(18px,4vw,36px);border:1px solid #c9d9c7}
+.quiz-meta{color:var(--muted);font-size:.88rem;font-weight:750;margin-bottom:10px}
+.quiz h3{font-size:clamp(1.16rem,2.5vw,1.5rem);line-height:1.4;max-width:850px}
+.options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:21px 0 14px}
+.option{min-height:52px;border:1px solid var(--line);border-radius:12px;background:var(--white);padding:10px;font-weight:750}
+.option:hover{border-color:var(--green)}
+.option[data-result="right"]{color:#fff;background:var(--green);border-color:var(--green)}
+.option[data-result="wrong"]{border-color:var(--wrong);background:var(--wrong-bg)}
+.feedback{min-height:1.55em;font-weight:680;max-width:850px}
+.feedback[data-result="wrong"]{color:#78351f}
+.next{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:9px 18px;margin-top:16px;border:1px solid var(--green);border-radius:999px;background:var(--green);color:#fff;font-weight:750}
+.next:hover{background:#17362a}
+.next:disabled{border-color:#bacbbb;background:#d8e5d6;color:#4d625a}
+.sources{font-size:.86rem;color:var(--muted);padding-bottom:32px}
+.sources p+p{margin-top:7px}
+.sources a{overflow-wrap:anywhere}
+footer{border-top:1px solid var(--line);padding:19px 0 27px;color:var(--muted);font-size:.9rem}
+.noscript{padding:20px;border:1px solid var(--wrong);background:var(--wrong-bg);margin-bottom:24px}
+@media(max-width:800px){
+.wrap{width:calc(100% - 30px)}
+.top .wrap{align-items:flex-start;flex-direction:column;gap:9px;padding:11px 0 13px}
+nav{gap:8px 18px}
+.model-content{grid-template-columns:minmax(0,1fr)}
+.timeline{padding:22px}
+.guide{padding:22px;border-top:1px solid var(--line)}
+.controls{padding:21px 22px;gap:16px}
+.formula{padding:21px}
+.intro-grid{gap:22px}
+}
+@media(max-width:540px){
+.hero h1{font-size:clamp(2.25rem,10.2vw,3rem)}
+.lesson-head{align-items:flex-start;gap:10px}
+.lesson-head .step{margin-top:2px}
+.intro-grid,.formula-grid{grid-template-columns:minmax(0,1fr)}
+.percent-strip{padding:20px}
+.controls{grid-template-columns:minmax(0,1fr) minmax(0,1fr);padding:19px 18px;gap:15px}
+.control:first-child{grid-column:1/-1;display:grid;grid-template-columns:1fr minmax(0,1fr);align-items:center;gap:12px}
+.control:first-child .control-head{margin-bottom:0}
+.mode-row{margin-top:0;gap:8px}
+.mode-row>span{width:100%}
+.timeline{padding:19px 16px 21px}
+.chart-head,.year-row{grid-template-columns:40px minmax(0,1fr);gap:11px}
+.guide{padding:21px 18px}
+.formula+.formula{border-left:0;border-top:1px solid var(--line)}
+.formula .equation{font-size:1.15rem}
+.example{padding:19px}
+.options{grid-template-columns:minmax(0,1fr)}
+.extra summary{padding:14px 16px}
+.extra-content{padding:0 16px 17px}
+.sources{font-size:.83rem}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+@media print{
+.top nav,.controls,.pill,.options,.next,footer{display:none}
+.wrap{width:100%}
+.lesson{padding-bottom:24px}
+.hero{padding:16px 0 24px}
+.hero h1{font-size:32px}
+.board,.formula-grid,.quiz{break-inside:avoid}
+.hero>p:last-child{font-size:17px}
+}
+</style>
+</head>
+<body id="top">
+<header class="top"><div class="wrap"><a class="home" href="../../"><span class="home-mark" aria-hidden="true">%</span> Школьные темы</a><nav aria-label="Разделы урока"><a href="#base">Процент от суммы</a><a href="#model">Постоянная база</a><a href="#quiz">Самопроверка</a></nav></div></header>
+<main class="wrap">
+  <div class="hero"><p class="eyebrow">Математика · 6 класс · 15 минут</p><h1>Простые проценты</h1><p>Процент каждый раз считают от первоначальной величины. Узнай, почему прибавки одинаковые, как найти весь прирост и как восстановить исходную сумму.</p></div>
+  <noscript><p class="noscript">Для изменения модели и самопроверки нужен JavaScript. Объяснения и разобранные примеры доступны ниже.</p></noscript>
+  <section class="lesson" id="base" aria-labelledby="base-heading">
+    <div class="lesson-head"><span class="step">Шаг 1</span><h2 id="base-heading">Как найти процент от суммы?</h2></div>
+    <div class="intro-grid">
+      <figure class="percent-strip"><p class="whole">1 000 ₽ составляют 100%</p><div class="ten-parts" role="img" aria-label="1000 рублей разделены на десять равных частей. Одна часть равна 100 рублям и составляет 10 процентов."><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div><figcaption>Одна из десяти частей: <strong>10% от суммы = 100 ₽.</strong></figcaption><small>Один процент: 1 000 : 100 = 10 ₽.</small></figure>
+      <div class="intro-copy"><p class="rule"><strong>База процента</strong>: величина, которую принимают за 100%.</p><p>Чтобы найти p% от суммы S, раздели S на 100 и умножь на p.</p><p class="equation">10% от 1 000: 1 000 · 10 : 100 = 100 ₽</p><p>Если эти 100 ₽ прибавить, получится 1 100 ₽. <strong>Прибавка и итоговая сумма различаются.</strong></p></div>
+    </div>
+  </section>
+  <section class="lesson" id="model" aria-labelledby="model-heading">
+    <div class="lesson-head"><span class="step">Шаг 2</span><h2 id="model-heading" tabindex="-1">Почему каждый раз меняется на столько же?</h2></div>
+    <p class="lead">При простых процентах база остаётся первоначальной. Измени ставку или число лет: одинаковое изменение в рублях повторяется каждый год.</p>
+    <div class="board">
+      <div class="controls">
+        <div class="control"><div class="control-head"><label for="principal">Исходная сумма S</label></div><select id="principal"><option value="1000">1 000 ₽</option><option value="5000">5 000 ₽</option><option value="12000">12 000 ₽</option></select></div>
+        <div class="control"><div class="control-head"><label for="rate">Процент за год</label><output id="rate-value" for="rate">10%</output></div><input class="range" id="rate" type="range" min="0" max="20" step="1" value="10"><div class="range-limits" aria-hidden="true"><span>0%</span><span>20%</span></div></div>
+        <div class="control"><div class="control-head"><label for="years">Число лет n</label><output id="years-value" for="years">3</output></div><input class="range" id="years" type="range" min="1" max="5" step="1" value="3"><div class="range-limits" aria-hidden="true"><span>1 год</span><span>5 лет</span></div></div>
+        <div class="mode-row" role="group" aria-label="Направление изменения"><span>Что происходит с суммой?</span><button class="pill mode" type="button" data-direction="1" aria-pressed="true">Увеличивается</button><button class="pill mode" type="button" data-direction="-1" aria-pressed="false">Уменьшается</button><button class="pill" id="model-reset" type="button">Исходный пример</button></div>
+      </div>
+      <div class="model-content">
+        <figure class="timeline" aria-labelledby="chart-caption"><div class="chart-head" aria-hidden="true"><span>Год</span><span>Вся сумма после изменения</span></div><div id="chart-rows"></div><figcaption class="chart-note" id="chart-caption">Все полосы начинаются от нуля и имеют общий масштаб. Справа указано изменение за один год.</figcaption></figure>
+        <div class="guide"><h3>База каждый год одна и та же</h3><p class="guide-intro" id="base-explanation">В каждом начислении 100% составляют первоначальные 1 000 ₽.</p>
+          <dl class="model-stats">
+            <div class="stat"><dt>База, принятая за 100%</dt><dd id="base-value">1 000 ₽</dd></div>
+            <div class="stat"><dt id="annual-label">Прибавка за один год</dt><dd id="annual-value">100 ₽</dd></div>
+            <div class="stat"><dt id="change-label">Весь прирост за 3 года</dt><dd id="change-value">300 ₽</dd></div>
+            <div class="stat total"><dt>Итоговая сумма</dt><dd id="final-value">1 300 ₽</dd></div>
+          </dl>
+          <p class="calculation" id="calculation">1 000 + 3 · 100 = 1 300 ₽</p><p class="model-result" id="model-result" role="status">За три года прибавилось 30% первоначальной суммы. База осталась равной 1 000 ₽.</p>
+        </div>
+      </div>
+    </div>
+    <p class="worked"><strong>Разбор исходного примера.</strong> С 1 000 ₽ каждый год берут одни и те же 10%: по 100 ₽. За три года прирост составит 300 ₽, а итоговая сумма 1 300 ₽. При сложных процентах базой стала бы текущая сумма; это другая модель.</p>
+  </section>
+  <section class="lesson" id="formulas" aria-labelledby="formulas-heading">
+    <div class="lesson-head"><span class="step">Шаг 3</span><h2 id="formulas-heading">Как заменить повторение формулой?</h2></div>
+    <p class="lead">Изменение за один период равно S · p : 100. За n периодов его нужно взять n раз и прибавить к исходной величине или вычесть из неё.</p>
+    <div class="formula-grid">
+      <div class="formula"><h3>Увеличение от исходной величины</h3><div class="equation">S<sub>n</sub> = S + S · p · n / 100</div><div class="equation" aria-label="Сумма после n периодов равна начальной сумме, умноженной на один плюс p умножить на n и разделить на сто.">S<sub>n</sub> = S · (1 + p · n / 100)</div><p class="concrete">1 000 · (1 + 10 · 3 / 100) = 1 300 ₽</p></div>
+      <div class="formula"><h3>Уменьшение от исходной величины</h3><div class="equation">S<sub>n</sub> = S − S · p · n / 100</div><div class="equation" aria-label="Величина после n периодов равна начальной величине, умноженной на один минус p умножить на n и разделить на сто.">S<sub>n</sub> = S · (1 − p · n / 100)</div><p>В этой модели цена или запас могут уменьшаться только до нуля. Для них должно выполняться p · n ≤ 100.</p></div>
+    </div>
+    <div class="notation"><p><strong>S</strong>: первоначальная величина; <strong>S<sub>n</sub></strong>: итог; <strong>p</strong>: число процентов за один период; <strong>n</strong>: число периодов. Для 10% подставляй p = 10.</p></div>
+    <div class="example"><h3>Пример из учебника: стоимость компьютера</h3><p>Компьютер стоил 12 000 ₽. Каждый год его стоимость уменьшается на 20% <strong>от первоначальных 12 000 ₽</strong>. За год убыль равна 2 400 ₽, за два года 4 800 ₽.</p><p class="equation">12 000 − 2 · 2 400 = 7 200 ₽</p><p class="equation">12 000 · (1 − 20 · 2 / 100) = 7 200 ₽</p><button class="pill" id="textbook-example" type="button">Показать этот пример в модели</button></div>
+  </section>
+  <section class="lesson" id="check" aria-labelledby="check-heading">
+    <div class="lesson-head"><span class="step">Шаг 4</span><h2 id="check-heading">Что проверить перед ответом?</h2></div>
+    <p class="lead">Согласуй единицы ставки и срока. Затем проверь, какую величину ищешь: изменение, итог или исходную сумму.</p>
+    <details class="extra" open><summary>Ставка за год: срок тоже выражаем в годах</summary><div class="extra-content"><p>При годовой ставке шесть месяцев составляют n = 6 : 12 = 0,5 года. Например, 5 000 ₽ увеличиваются по правилу простых процентов на 8% в год.</p><p class="equation">5 000 · (1 + 8 · 0,5 / 100) = 5 200 ₽</p><p class="muted">За полгода прирост составляет 4% от исходной суммы, то есть 200 ₽. Если ставка дана за месяц, n нужно выражать в месяцах.</p></div></details>
+    <details class="extra" open><summary>Известен итог: исходную сумму находим делением</summary><div class="extra-content"><p>После трёх лет простого роста на 10% в год получилось 1 300 ₽. Общий прирост составляет 30% исходной суммы, поэтому итог соответствует 130%.</p><p class="equation">S · 1,3 = 1 300<br>S = 1 300 : 1,3 = 1 000 ₽</p><p class="muted">Делим на коэффициент 1 + p · n / 100. При простом уменьшении используется коэффициент 1 − p · n / 100, если он больше нуля.</p></div></details>
+  </section>
+  <section class="lesson" id="quiz" aria-labelledby="quiz-heading">
+    <div class="lesson-head"><span class="step">Шаг 5</span><h2 id="quiz-heading">Проверь себя</h2></div>
+    <p class="lead">Семь задач про постоянную базу. После ошибки прочитай подсказку и исправь ответ.</p>
+    <div class="quiz"><p class="quiz-meta" id="quiz-progress"></p><h3 id="question"></h3><div class="options" id="options" role="group" aria-labelledby="question"></div><p class="feedback" id="feedback" role="status"></p><button class="next" type="button" id="quiz-next" disabled>Дальше</button></div>
+  </section>
+  <aside class="sources" aria-label="Источник урока"><p>По учебнику Г. В. Дорофеева и Л. Г. Петерсон «Математика. 6 класс. Часть 1», Ювента, 2010: глава 2, § 2, пункт 3 «Простой процентный рост», с. 97–99. Пример со стоимостью компьютера: с. 99. Объяснения и самопроверка составлены для этого урока.</p><p><a href="https://drive.google.com/file/d/0B2YH4n-p-TLDcFB0SGQ3cEljMEU/view?resourcekey=0-qXyD3TnKggx_-Z1FdV1Y9Q" target="_blank" rel="noopener noreferrer">Открыть PDF первой части в Google Drive</a>. Указаны печатные страницы; в PDF это страницы 99–101.</p></aside>
+</main>
+<footer><div class="wrap"><a href="../../">← Все предметы</a> · <a href="#top">К началу урока ↑</a></div></footer>
+<script>
+(() => {
+  "use strict";
+  const find = (id) => document.getElementById(id);
+  const formatter = new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 2 });
+  const number = (value) => formatter.format(Math.abs(value) < 1e-9 ? 0 : value);
+  const money = (value) => number(value) + " ₽";
+  const yearsWord = (value) => value === 1 ? "год" : value < 5 ? "года" : "лет";
+  let direction = 1;
+
+  function updateModel() {
+    const initial = Number(find("principal").value);
+    const rate = Number(find("rate").value);
+    const years = Number(find("years").value);
+    const annualChange = initial * rate / 100;
+    const totalChange = annualChange * years;
+    const values = Array.from({ length: years + 1 }, (_, n) => initial + direction * annualChange * n);
+    const finalValue = values[years];
+    const scale = Math.max(initial, ...values);
+    const sign = direction === 1 ? "+" : "−";
+    const signedAnnual = annualChange === 0 ? money(0) : sign + money(annualChange);
+
+    find("rate-value").textContent = rate + "%";
+    find("years-value").textContent = years;
+    find("rate").setAttribute("aria-valuetext", rate + " процентов за год");
+    find("years").setAttribute("aria-valuetext", years + " " + yearsWord(years));
+    document.querySelectorAll(".mode").forEach((button) => {
+      button.setAttribute("aria-pressed", Number(button.dataset.direction) === direction ? "true" : "false");
+    });
+
+    const rows = find("chart-rows");
+    rows.replaceChildren();
+    values.forEach((value, n) => {
+      const row = document.createElement("div");
+      row.className = "year-row";
+      row.setAttribute("role", "img");
+      const label = n === 0 ? "В начале: " + money(value) : "К концу " + n + "-го года: " + money(value) + ". Изменение за год: " + signedAnnual;
+      row.setAttribute("aria-label", label + ".");
+      row.innerHTML = '<span class="year-label" aria-hidden="true">' + (n === 0 ? "Старт" : n) + '</span><div aria-hidden="true"><div class="row-values"><span class="balance">' + money(value) + '</span><span class="change">' + (n === 0 ? "База" : signedAnnual) + '</span></div><div class="bar-track"><div class="bar-fill" style="width:' + (value / scale * 100) + '%"></div></div></div>';
+      rows.append(row);
+    });
+
+    find("base-explanation").textContent = "В каждом расчёте 100% составляют первоначальные " + money(initial) + ". База не меняется вместе с итоговой суммой.";
+    find("base-value").textContent = money(initial);
+    find("annual-label").textContent = direction === 1 ? "Прибавка за один год" : "Убыль за один год";
+    find("annual-value").textContent = money(annualChange);
+    find("change-label").textContent = (direction === 1 ? "Весь прирост за " : "Вся убыль за ") + years + " " + yearsWord(years);
+    find("change-value").textContent = money(totalChange);
+    find("final-value").textContent = money(finalValue);
+    find("calculation").textContent = number(initial) + " " + sign + " " + years + " · " + number(annualChange) + " = " + money(finalValue);
+    if (rate === 0) {
+      find("model-result").textContent = "При 0% изменение равно нулю. Сумма остаётся равной " + money(initial) + ".";
+    } else {
+      find("model-result").textContent = "За " + years + " " + yearsWord(years) + " " + (direction === 1 ? "прибавилось " : "убыло ") + number(rate * years) + "% первоначальной суммы. База осталась равной " + money(initial) + ".";
+    }
+  }
+
+  ["principal", "rate", "years"].forEach((id) => find(id).addEventListener("input", updateModel));
+  document.querySelectorAll(".mode").forEach((button) => {
+    button.addEventListener("click", () => {
+      direction = Number(button.dataset.direction);
+      updateModel();
+    });
+  });
+  function setExample(initial, rate, years, nextDirection) {
+    find("principal").value = initial;
+    find("rate").value = rate;
+    find("years").value = years;
+    direction = nextDirection;
+    updateModel();
+  }
+  find("model-reset").addEventListener("click", () => setExample(1000, 10, 3, 1));
+  find("textbook-example").addEventListener("click", () => {
+    setExample(12000, 20, 2, -1);
+    find("model-heading").focus({ preventScroll: true });
+    find("model").scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
+  });
+
+  const questions = [
+    {
+      text: "Исходная сумма 2 000 ₽ составляет 100%. Чему равны 15% от неё?",
+      options: ["30 ₽", "300 ₽", "2 300 ₽"],
+      correct: 1,
+      hint: "Найди один процент делением на 100, затем возьми пятнадцать таких частей.",
+      explanation: "Верно. 2 000 : 100 · 15 = 300 ₽. Это часть исходной суммы."
+    },
+    {
+      text: "При простом росте на 10% в год исходные 1 000 ₽ за первый год выросли до 1 100 ₽. От какой суммы считают 10% во втором году?",
+      options: ["От 1 100 ₽", "От 100 ₽", "От 1 000 ₽"],
+      correct: 2,
+      hint: "Вспомни, меняется ли база при простых процентах. Итог первого года и первоначальная сумма различаются.",
+      explanation: "Верно. База остаётся равной первоначальным 1 000 ₽. Поэтому во втором году прибавят те же 100 ₽."
+    },
+    {
+      text: "К 2 000 ₽ четыре года подряд прибавляют по 5% от первоначальной суммы. Каков весь прирост за четыре года?",
+      options: ["400 ₽", "2 400 ₽", "100 ₽"],
+      correct: 0,
+      hint: "Вычисли прибавку за один год и умножь на четыре. Здесь спрашивают только прирост.",
+      explanation: "Верно. За год: 2 000 · 0,05 = 100 ₽. За четыре года прирост равен 400 ₽; итоговая сумма составила бы 2 400 ₽."
+    },
+    {
+      text: "Исходная сумма 5 000 ₽ растёт по правилу простых процентов на 8% в год. Какой будет итог через два года?",
+      options: ["800 ₽", "5 832 ₽", "5 800 ₽"],
+      correct: 2,
+      hint: "Найди 8% от первоначальных 5 000 ₽. Прибавь эту величину два раза, сохранив исходную сумму.",
+      explanation: "Верно. Каждый год прибавляют 400 ₽. 5 000 + 2 · 400 = 5 800 ₽."
+    },
+    {
+      text: "Каждый год стоимость уменьшается на 20% от первоначальных 5 000 ₽. Какой она будет через три года?",
+      options: ["2 000 ₽", "2 560 ₽", "3 000 ₽"],
+      correct: 0,
+      hint: "Убыль каждый год одинаковая, ведь процент считают от первоначальных 5 000 ₽. Вычти три таких убыли.",
+      explanation: "Верно. Ежегодная убыль равна 1 000 ₽. 5 000 − 3 · 1 000 = 2 000 ₽. Число 3 000 ₽ обозначает всю убыль."
+    },
+    {
+      text: "Сумма 5 000 ₽ увеличивается на 12% в год по правилу простых процентов. Сколько получится за полгода?",
+      options: ["8 600 ₽", "5 600 ₽", "5 300 ₽"],
+      correct: 2,
+      hint: "Ставка дана за год. Какую часть года составляют шесть месяцев? Используй эту долю в качестве n.",
+      explanation: "Верно. n = 0,5. За полгода прирост равен 6% от 5 000, то есть 300 ₽. Итог: 5 300 ₽."
+    },
+    {
+      text: "После двух лет простого роста на 6% в год сумма стала 3 360 ₽. Какой была исходная сумма?",
+      options: ["2 956,80 ₽", "3 000 ₽", "3 600 ₽"],
+      correct: 1,
+      hint: "Определи, сколько процентов исходной суммы составляет итог за два года. Затем раздели итог на соответствующий коэффициент.",
+      explanation: "Верно. За два года прирост составил 12%, поэтому S · 1,12 = 3 360. Исходная сумма: 3 360 : 1,12 = 3 000 ₽."
+    }
+  ];
+  let questionIndex = 0;
+  let answered = false;
+
+  function showQuestion() {
+    const question = questions[questionIndex];
+    const next = find("quiz-next");
+    find("options").replaceChildren();
+    find("feedback").textContent = "";
+    delete find("feedback").dataset.result;
+    answered = false;
+    if (!question) {
+      find("quiz-progress").textContent = "Пройдено " + questions.length + " из " + questions.length;
+      find("question").textContent = "Урок пройден";
+      find("feedback").textContent = "При простых процентах база остаётся первоначальной. Найди изменение за один период, умножь его на число периодов и прибавь к исходной величине или вычти из неё.";
+      next.textContent = "Пройти ещё раз";
+      next.disabled = false;
+      return;
+    }
+    find("quiz-progress").textContent = "Вопрос " + (questionIndex + 1) + " из " + questions.length;
+    find("question").textContent = question.text;
+    next.textContent = questionIndex === questions.length - 1 ? "Завершить" : "Дальше";
+    next.disabled = true;
+    question.options.forEach((option, index) => {
+      const button = document.createElement("button");
+      button.className = "option";
+      button.type = "button";
+      button.textContent = option;
+      button.addEventListener("click", () => {
+        if (answered) return;
+        const correct = question.correct === index;
+        find("options").querySelectorAll("button").forEach((candidate) => {
+          delete candidate.dataset.result;
+          if (correct) candidate.setAttribute("aria-disabled", "true");
+        });
+        button.dataset.result = correct ? "right" : "wrong";
+        find("feedback").dataset.result = correct ? "right" : "wrong";
+        find("feedback").textContent = correct ? question.explanation : "Пока неверно. " + question.hint;
+        answered = correct;
+        next.disabled = !correct;
+      });
+      find("options").append(button);
+    });
+  }
+
+  find("quiz-next").addEventListener("click", () => {
+    questionIndex = questionIndex === questions.length ? 0 : questionIndex + 1;
+    showQuestion();
+    (find("options").querySelector("button") || find("quiz-next")).focus();
+  });
+  updateModel();
+  showQuestion();
+})();
+</script>
+</body>
+</html>
+
