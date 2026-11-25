@@ -1,11 +1,35 @@
 import assert from "node:assert/strict";
+import { readdir } from "node:fs/promises";
+import path from "node:path";
 import test from "node:test";
+import { contentDirectory } from "../scripts/catalog.mjs";
 import { validateAllLessons, validateLessonHtml } from "../scripts/validate-content.mjs";
 
 test("все уроки проходят единые ограничения публикации", async () => {
   const validated = await validateAllLessons();
-  assert.equal(validated.length, 4);
-  assert.deepEqual(validated.map(({ questionCount }) => questionCount), [6, 5, 6, 6]);
+  const sourcePaths = (await readdir(contentDirectory, { recursive: true }))
+    .filter((file) => path.basename(file) === "meta.json")
+    .map((file) => path.dirname(file).split(path.sep).join("/"))
+    .sort();
+  assert.deepEqual(
+    validated.map(({ subject, slug }) => `${subject}/${slug}`).sort(),
+    sourcePaths,
+  );
+  const originalQuestionCounts = new Map([
+    ["history/rasselenie-slavyan", 6],
+    ["literature/uznik", 5],
+    ["math/trigonometriya", 6],
+    ["math/proportsiya", 6],
+  ]);
+  for (const [lessonPath, expectedCount] of originalQuestionCounts) {
+    const lesson = validated.find(({ subject, slug }) => `${subject}/${slug}` === lessonPath);
+    assert.ok(lesson, `Не проверен существующий урок ${lessonPath}`);
+    assert.equal(lesson.questionCount, expectedCount, lessonPath);
+  }
+  for (const lesson of validated) {
+    assert.ok(Number.isInteger(lesson.questionCount) && lesson.questionCount >= 5 && lesson.questionCount <= 7,
+      `${lesson.subject}/${lesson.slug}: требуется 5–7 вопросов`);
+  }
 });
 
 test("валидатор отклоняет внешние скрипты", () => {

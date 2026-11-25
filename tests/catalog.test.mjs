@@ -1,8 +1,8 @@
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import test from "node:test";
-import { loadCatalog } from "../scripts/catalog.mjs";
+import { contentDirectory, loadCatalog } from "../scripts/catalog.mjs";
 
 test("каталог содержит полный упорядоченный список предметов и первый урок", async () => {
   const subjects = await loadCatalog();
@@ -17,8 +17,11 @@ test("каталог содержит полный упорядоченный с
     "Информатика"
   ]);
   const math = subjects.find(({ slug }) => slug === "math");
-  assert.equal(math.lessons.length, 2);
-  assert.deepEqual(math.lessons.map(({ slug }) => slug), ["trigonometriya", "proportsiya"]);
+  const initialMathSlugs = ["trigonometriya", "proportsiya"];
+  assert.deepEqual(
+    math.lessons.map(({ slug }) => slug).filter((slug) => initialMathSlugs.includes(slug)),
+    initialMathSlugs,
+  );
 });
 
 test("каталог включает уроки по истории и литературе", async () => {
@@ -26,22 +29,39 @@ test("каталог включает уроки по истории и лите
   const lessonsBySubject = Object.fromEntries(
     subjects.map(({ slug, lessons }) => [slug, lessons.map((lesson) => lesson.slug)])
   );
-  assert.deepEqual(lessonsBySubject.history, ["rasselenie-slavyan"]);
-  assert.deepEqual(lessonsBySubject.literature, ["uznik"]);
+  assert.ok(lessonsBySubject.history.includes("rasselenie-slavyan"));
+  assert.ok(lessonsBySubject.literature.includes("uznik"));
 });
 
-test("slug урока уникален внутри предмета", async () => {
+test("каталог содержит все папки уроков без дублей и сохраняет порядок", async () => {
   const subjects = await loadCatalog();
+  const sourcePaths = (await readdir(contentDirectory, { recursive: true }))
+    .filter((file) => path.basename(file) === "meta.json")
+    .map((file) => path.dirname(file).split(path.sep).join("/"))
+    .sort();
+  const catalogPaths = subjects.flatMap((subject) =>
+    subject.lessons.map((lesson) => `${subject.slug}/${lesson.slug}`)
+  ).sort();
+  assert.deepEqual(catalogPaths, sourcePaths);
   for (const subject of subjects) {
     const slugs = subject.lessons.map(({ slug }) => slug);
     assert.equal(new Set(slugs).size, slugs.length);
+    for (let index = 1; index < subject.lessons.length; index += 1) {
+      const previous = subject.lessons[index - 1];
+      const current = subject.lessons[index];
+      assert.ok(
+        previous.order < current.order ||
+          (previous.order === current.order && previous.title.localeCompare(current.title, "ru") <= 0),
+        `${subject.slug}: нарушен порядок уроков`,
+      );
+    }
   }
 });
 
 test("каждый урок содержит интерактивную самопроверку", async () => {
   const subjects = await loadCatalog();
   const lessons = subjects.flatMap(({ lessons }) => lessons);
-  assert.equal(lessons.length, 4);
+  assert.ok(lessons.length > 0);
   for (const lesson of lessons) {
     const html = await readFile(path.join(lesson.sourceDirectory, "index.html"), "utf8");
     assert.match(html, /id="quiz"/, lesson.slug);
