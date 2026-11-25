@@ -29,7 +29,12 @@ install -d -m 0755 "${challenge_dir}"
 printf '%s' "${challenge_value}" >"${challenge_dir}/${challenge_name}"
 trap 'rm -f "${challenge_dir}/${challenge_name}"' EXIT
 
-served_value="$(curl --noproxy '*' --fail --silent --max-time 15 "http://${DOMAIN}/.well-known/acme-challenge/${challenge_name}")"
+served_value=""
+for attempt in {1..10}; do
+  served_value="$(curl --noproxy '*' --fail --silent --max-time 15 "http://${DOMAIN}/.well-known/acme-challenge/${challenge_name}" 2>/dev/null || true)"
+  [[ "${served_value}" == "${challenge_value}" ]] && break
+  sleep 1
+done
 if [[ "${served_value}" != "${challenge_value}" ]]; then
   echo "The public ACME challenge path is not served by this host." >&2
   exit 1
