@@ -137,7 +137,7 @@ async function build() {
 
   await writeFile(path.join(outputDirectory, ".nojekyll"), "", "utf8");
   const lessonCount = subjects.reduce((total, subject) => total + subject.lessons.length, 0);
-  console.log(`Собрано: ${subjects.length} предмета, ${lessonCount} урок.`);
+  console.log(`Собрано: предметов — ${subjects.length}, уроков — ${lessonCount}.`);
 }
 
 await build();

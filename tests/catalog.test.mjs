@@ -4,11 +4,21 @@ import path from "node:path";
 import test from "node:test";
 import { loadCatalog } from "../scripts/catalog.mjs";
 
-test("каталог содержит три предмета и первый урок", async () => {
+test("каталог содержит полный упорядоченный список предметов и первый урок", async () => {
   const subjects = await loadCatalog();
-  assert.deepEqual(subjects.map(({ slug }) => slug), ["math", "russian", "biology"]);
-  assert.equal(subjects[0].lessons.length, 1);
-  assert.equal(subjects[0].lessons[0].slug, "trigonometriya");
+  assert.deepEqual(subjects.map(({ title }) => title), [
+    "История",
+    "Литература",
+    "Математика",
+    "Русский язык",
+    "Биология",
+    "География",
+    "Английский",
+    "Информатика"
+  ]);
+  const math = subjects.find(({ slug }) => slug === "math");
+  assert.equal(math.lessons.length, 1);
+  assert.equal(math.lessons[0].slug, "trigonometriya");
 });
 
 test("slug урока уникален внутри предмета", async () => {
@@ -21,7 +31,7 @@ test("slug урока уникален внутри предмета", async () 
 
 test("урок содержит интерактивную самопроверку", async () => {
   const subjects = await loadCatalog();
-  const lesson = subjects[0].lessons[0];
+  const lesson = subjects.find(({ slug }) => slug === "math").lessons[0];
   const html = await readFile(path.join(lesson.sourceDirectory, "index.html"), "utf8");
   assert.match(html, /id="quiz"/);
   assert.match(html, /const questions = \[/);
