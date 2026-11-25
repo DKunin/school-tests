@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "node scripts/build.mjs",
-    "check": "node --test && node scripts/build.mjs && node scripts/check-output.mjs",
+    "check": "node --test && bash -n ops/*.sh && node scripts/build.mjs && node scripts/check-output.mjs",
     "serve": "node scripts/serve.mjs"
   },
   "engines": {

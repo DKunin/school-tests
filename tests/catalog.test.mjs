@@ -27,3 +27,14 @@ test("урок содержит интерактивную самопровер�
   assert.match(html, /const questions = \[/);
   assert.match(html, /addEventListener/);
 });
+
+test("production-конфигурация закрепляет домен и атомарный выпуск", async () => {
+  const nginx = await readFile(new URL("../ops/nginx/school.kunini.ru.conf", import.meta.url), "utf8");
+  const deploy = await readFile(new URL("../ops/deploy.sh", import.meta.url), "utf8");
+  assert.match(nginx, /server_name school\.kunini\.ru;/);
+  assert.match(nginx, /root \/var\/apps\/school-tests\/current;/);
+  assert.match(nginx, /letsencrypt\/live\/school\.kunini\.ru\/fullchain\.pem/);
+  assert.match(deploy, /git pull --ff-only origin main/);
+  assert.match(deploy, /mv -Tf .*current\.next.*current/);
+  assert.match(deploy, /restored .*previous state/);
+});

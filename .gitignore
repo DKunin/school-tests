@@ -1,4 +1,7 @@
 dist/
+current
+current.next
+releases/
 node_modules/
 .DS_Store
 .playwright-mcp/

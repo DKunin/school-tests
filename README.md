@@ -26,3 +26,14 @@ npm run serve
 ## Сборка и публикация
 
 `npm run build` создаёт готовый статический сайт в `dist/`. При каждом push в `main` GitHub Actions проверяет проект и публикует эту папку в GitHub Pages.
+
+## Production
+
+Основной домен — `https://school.kunini.ru`. Серверный checkout находится в `/var/apps/school-tests`; Nginx раздаёт атомарно переключаемый symlink `current`.
+
+```bash
+./ops/deploy.sh
+./ops/setup-nginx.sh # только при первичной настройке TLS/Nginx
+```
+
+`deploy.sh` принимает только чистый checkout, выполняет проверки, создаёт отдельный каталог выпуска и переключает `current` одной операцией. Если публичная проверка не проходит, symlink возвращается на предыдущий выпуск. Для ручного отката нужно так же переключить `current` на нужный каталог из `releases/`.
