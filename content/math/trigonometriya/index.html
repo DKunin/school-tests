@@ -1,0 +1,632 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; base-uri 'none'; form-action 'none'">
+<title>Тригонометрия на горке</title>
+<style>
+:root {
+  --paper: #f8f7f1;
+  --ink: #192d29;
+  --muted: #4d625a;
+  --line: #d6ddd2;
+  --white: #fffefa;
+  --mint: #e8f2e8;
+  --green: #24493a;
+  --lime: #d9ec90;
+  --up: #ad4325;
+  --along: #14624f;
+  --slope: #6443a6;
+  --angle: #59478e;
+  --up-bg: #fbece3;
+  --along-bg: #e3f3e9;
+  --slope-bg: #eee8fa;
+  --radius: 24px;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background: var(--paper);
+  font: 17px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+}
+h1, h2, h3, p, figure { margin: 0; }
+a { color: inherit; }
+button, input, summary { font: inherit; }
+button, summary, input[type="range"] { cursor: pointer; }
+button { color: inherit; }
+:focus-visible { outline: 3px solid var(--slope); outline-offset: 4px; }
+[hidden] { display: none !important; }
+.wrap { width: min(1120px, calc(100% - 48px)); margin-inline: auto; }
+.top {
+  border-bottom: 1px solid var(--line);
+  background: var(--paper);
+}
+.top .wrap { display: flex; align-items: center; justify-content: space-between; min-height: 67px; gap: 16px; }
+.home { display: inline-flex; align-items: center; gap: 9px; font-weight: 750; text-decoration: none; white-space: nowrap; }
+.home-mark {
+  display: inline-grid; place-items: center;
+  width: 33px; height: 33px; border-radius: 10px; background: var(--lime); color: var(--green);
+}
+nav { display: flex; flex-wrap: wrap; gap: 12px 24px; font-size: .88rem; }
+nav a { color: var(--muted); text-decoration: none; }
+nav a:hover { color: var(--ink); text-decoration: underline; text-underline-offset: 4px; }
+.hero { padding: clamp(38px, 6vw, 78px) 0 clamp(28px, 4vw, 45px); }
+.hero h1 {
+  max-width: 1000px;
+  font-size: clamp(2.6rem, 7vw, 5.55rem);
+  line-height: .99;
+  letter-spacing: -.072em;
+  font-weight: 850;
+  text-wrap: balance;
+}
+.hero p { max-width: 710px; margin-top: 22px; font-size: clamp(1.05rem, 2.5vw, 1.28rem); color: var(--muted); }
+.lesson { padding-bottom: clamp(44px, 7vw, 86px); scroll-margin-top: 20px; }
+.lesson-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 16px; }
+.step { font-size: .8rem; color: var(--green); font-weight: 800; background: var(--lime); border-radius: 999px; padding: 3px 9px; white-space: nowrap; }
+h2 { font-size: clamp(1.65rem, 3.8vw, 2.65rem); letter-spacing: -.05em; line-height: 1.06; font-weight: 800; text-wrap: balance; }
+h3 { font-size: 1.22rem; line-height: 1.17; letter-spacing: -.025em; }
+.lead { color: var(--muted); max-width: 720px; margin-bottom: 20px; }
+.board { display: grid; grid-template-columns: minmax(0,1.15fr) minmax(0,1fr); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: var(--white); }
+.play { min-width: 0; background: var(--mint); padding: clamp(15px, 3vw, 32px); }
+.angle-readout { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.angle-readout label { font-weight: 750; }
+.angle-readout output { font-weight: 850; line-height: 1; color: var(--angle); font-size: 1.75rem; font-variant-numeric: tabular-nums; }
+.graph { position: relative; min-width: 0; color: var(--green); }
+.graph--main { margin-block: 10px 12px; border-radius: 16px; overflow: hidden; background: #f3f8ed; }
+.graph svg { display: block; width: 100%; height: auto; overflow: visible; }
+.graph svg .side-text, .graph svg .angle-text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; font-weight: 800; font-variant-numeric: tabular-nums; }
+.graph svg .side-text { paint-order: stroke; stroke-linejoin: round; stroke-width: 5px; }
+.range { display: block; width: 100%; margin: 0; height: 38px; accent-color: var(--green); }
+.range-limits { display: flex; justify-content: space-between; font-size: .82rem; font-weight: 650; color: var(--muted); }
+.preset-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+.pill, .side-card, .choice, .option {
+  border: 1px solid var(--line); background: var(--white);
+}
+.pill { min-height: 44px; padding: 6px 12px; border-radius: 999px; font-size: .88rem; font-weight: 720; }
+.pill:hover, .choice:hover, .option:hover { border-color: var(--green); }
+.pill[aria-pressed="true"] { background: var(--green); border-color: var(--green); color: white; }
+.guide { padding: clamp(20px,3vw,34px); min-width: 0; }
+.guide > p { margin-top: 10px; color: var(--muted); }
+.side-list { display: grid; gap: 8px; margin-block: 18px; }
+.side-card {
+  display: grid; width: 100%; align-items: start; grid-template-columns: 11px minmax(0, 1fr) auto;
+  column-gap: 10px; row-gap: 2px; text-align: left; padding: 11px 12px; border-radius: 12px;
+}
+.side-card:hover, .side-card[aria-pressed="true"] { border-color: var(--side); background: var(--side-bg); }
+.side-card b { line-height: 1.3; }
+.side-card .dot { width: 9px; height: 9px; border-radius: 50%; background-color: var(--side); margin-top: 7px; }
+.side-card small { grid-column: 2 / -1; color: var(--muted); line-height: 1.4; }
+.side-card .dist { color: var(--side); font-variant-numeric: tabular-nums; white-space: nowrap; font-weight: 800; line-height: 1.3; }
+.up { --side: var(--up); --side-bg: var(--up-bg); }
+.along { --side: var(--along); --side-bg: var(--along-bg); }
+.slope { --side: var(--slope); --side-bg: var(--slope-bg); }
+.word { color: var(--side); font-weight: 780; }
+.tip { border-left: 3px solid #9bb756; padding-left: 12px; font-size: .95rem; }
+.ratio-choices { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 8px; margin-bottom: 10px; }
+.choice { text-align: left; padding: 11px 14px; border-radius: 14px; min-height: 56px; min-width: 0; }
+.choice b { display: block; line-height: 1.25; }
+.choice small { color: var(--muted); }
+.choice[aria-pressed="true"] { color: white; background: var(--green); border-color: var(--green); }
+.choice[aria-pressed="true"] small { color: #e3f3e9; }
+.ratio-panel { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0,.91fr); overflow: hidden; border: 1px solid var(--line); background: var(--white); border-radius: var(--radius); }
+.ratio-graph { background: #f0f5ea; display: grid; align-content: center; padding: 9px 20px; }
+.ratio-graph svg { max-width: 430px; margin-inline: auto; }
+.ratio-graph figcaption { font-size: .87rem; font-weight: 760; padding-top: 8px; text-align: center; }
+.ratio-copy { display: grid; align-content: center; gap: 10px; padding: clamp(18px,4vw,38px); }
+.ratio-copy h3 { font-size: clamp(1.3rem,3vw,1.8rem); }
+.ratio-practice { margin-top: 14px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; }
+.ratio-practice p { flex: 1 1 315px; color: var(--muted); }
+.ratio-practice .preset-row { margin: 0; }
+.equation { display: flex; flex-wrap: wrap; align-items: center; column-gap: .54em; row-gap: 8px; font-size: clamp(1.06rem,2.4vw,1.45rem); font-weight: 780; font-variant-numeric: tabular-nums; }
+.equation-part { display: inline-flex; align-items: center; gap: .54em; }
+.fraction { display: inline-grid; place-items: stretch; text-align: center; min-width: 32px; line-height: 1.2; }
+.fraction > span { padding-inline: .26em; }
+.fraction > span:first-child { border-bottom: 1.5px solid var(--ink); padding-bottom: .16em; }
+.fraction > span:last-child { padding-top: .16em; }
+.ratio-copy > p { color: var(--muted); }
+.ratio-copy .rounding { font-size: .83rem; }
+.comparison { background: var(--white); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+.comparison-figures { display: grid; grid-template-columns: 1fr 1fr; background: #f0f5ea; }
+.comparison-figures figure { min-width: 0; padding: 14px clamp(8px,3vw,28px) 0; }
+.comparison-figures figure + figure { border-left: 1px solid var(--line); }
+.comparison-figures figcaption { text-align: center; font-size: .92rem; font-weight: 780; }
+.comparison-figures svg { margin-inline: auto; max-width: 350px; }
+.comparison-text { padding: 18px clamp(16px,3vw,28px); }
+.comparison-text p + p { margin-top: 8px; }
+.extra { margin-top: 14px; border: 1px solid var(--line); border-radius: 16px; background: var(--white); }
+.extra > summary { padding: 13px 17px; font-weight: 760; }
+.extra-content { padding: 0 16px 16px; display: grid; grid-template-columns: minmax(0,.8fr) minmax(0,1.2fr); align-items: center; gap: 16px; }
+.extra-graph { background: #f0f5ea; border-radius: 12px; display: grid; justify-items: center; }
+.extra-graph svg { max-width: 320px; }
+.extra-content p { margin-top: 10px; color: var(--muted); }
+.quiz {
+  border-radius: var(--radius); background: #e7efe2; padding: clamp(17px,4vw,36px);
+  border: 1px solid #c9d9c7;
+}
+.quiz-meta { color: var(--muted); font-size: .89rem; font-weight: 740; margin-bottom: 8px; }
+.quiz h3 { font-size: clamp(1.25rem, 3vw, 1.75rem); }
+.quiz-grid { display: grid; grid-template-columns: minmax(0,1fr) minmax(180px,32%); column-gap: 22px; align-items: start; }
+.quiz-grid:has(.quiz-graph[hidden]) { grid-template-columns: minmax(0,1fr); }
+.quiz-graph { grid-column: 2; grid-row: 1 / 3; display: grid; place-items: center; background: #f0f5ea; border-radius: 13px; }
+.quiz-graph svg { max-width: 270px; }
+.quiz-actions { grid-column: 1; }
+.options { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 8px; margin-block: 18px 12px; }
+.option { min-height: 49px; border-radius: 12px; padding: 8px 10px; font-weight: 730; }
+.option[data-result="right"] { color: white; background: var(--green); border-color: var(--green); }
+.option[data-result="wrong"] { border-color: var(--up); background: var(--up-bg); }
+.option:disabled { cursor: default; opacity: 1; }
+.feedback { min-height: 1.55em; font-weight: 680; }
+.feedback[data-result="wrong"] { color: #78351f; }
+.next {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  border: 1px solid var(--green); border-radius: 999px; padding: 8px 17px; min-height: 44px;
+  font-weight: 750; background: var(--green); color: white; margin-top: 13px;
+}
+.next:hover { background: #17362a; }
+.next:disabled { border-color: #bacbbb; background: #d8e5d6; color: #4d625a; cursor: default; }
+footer { border-top: 1px solid var(--line); padding-block: 18px 27px; color: var(--muted); font-size: .9rem; }
+footer a { text-underline-offset: 4px; }
+@media (max-width: 760px) {
+  .wrap { width: calc(100% - 30px); }
+  .top .wrap { align-items: flex-start; flex-direction: column; gap: 9px; padding-block: 10px 12px; }
+  nav { gap: 6px 19px; }
+  .board, .ratio-panel { grid-template-columns: minmax(0,1fr); }
+  .graph--main svg { max-width: 450px; margin-inline: auto; }
+  .ratio-choices { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .ratio-graph { padding: 4px 12px; }
+  .ratio-graph svg { max-width: 320px; }
+  .quiz-grid { grid-template-columns: minmax(0,1fr); }
+  .quiz-graph { grid-column: 1; grid-row: auto; margin-top: 12px; }
+}
+@media (max-width: 480px) {
+  .extra-content { grid-template-columns: minmax(0,1fr); }
+  .options { grid-template-columns: minmax(0,1fr); }
+  .comparison-figures figcaption { font-size: .81rem; }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+</head>
+<body id="top">
+<header class="top">
+  <div class="wrap">
+    <a class="home" href="../../"><span class="home-mark" aria-hidden="true">◢</span> Школьные темы</a>
+    <nav aria-label="Разделы урока">
+      <a href="#triangle">Треугольник</a>
+      <a href="#ratios">Четыре дроби</a>
+      <a href="#quiz">Самопроверка</a>
+    </nav>
+  </div>
+</header>
+<main class="wrap">
+  <div class="hero">
+    <h1>Тригонометрия<br>на горке</h1>
+    <p>Представь, что идёшь вверх по горке. Чем она круче, тем больше высоты ты набираешь. Синус, косинус, тангенс и котангенс помогают описать это с помощью четырёх простых делений.</p>
+  </div>
+
+  <section class="lesson" id="triangle" aria-labelledby="triangle-heading">
+    <div class="lesson-head"><span class="step">Шаг 1</span><h2 id="triangle-heading">Найди три стороны</h2></div>
+    <div class="board">
+      <div class="play">
+        <div class="angle-readout">
+          <label for="incline">Наклон горки</label>
+          <output id="angle-value" for="incline">≈ 36,9°</output>
+        </div>
+        <div class="graph graph--main" id="main-graph"></div>
+        <input class="range" id="incline" type="range" min="12" max="78" step="any" value="36.86989764584402" aria-describedby="slider-hint">
+        <div class="range-limits" id="slider-hint"><span>Пологая · 12°</span><span>Крутая · 78°</span></div>
+        <div class="preset-row" role="group" aria-label="Примеры наклона">
+          <button class="pill preset" type="button" data-angle="classic" aria-pressed="true">Горка 3–4–5</button>
+          <button class="pill preset" type="button" data-angle="30" aria-pressed="false">30°</button>
+          <button class="pill preset" type="button" data-angle="45" aria-pressed="false">45°</button>
+          <button class="pill preset" type="button" data-angle="60" aria-pressed="false">60°</button>
+        </div>
+      </div>
+      <div class="guide">
+        <h3>Смотрим на угол у подножия</h3>
+        <p>Мысленно проведи линию от вершины горки прямо вниз до земли. Получится треугольник с углом в 90°, как у листа бумаги. Две стороны этого угла называются <strong>катетами</strong>. Фиолетовая дуга отмечает угол, который будем менять.</p>
+        <div class="side-list" role="group" aria-label="Подсветить сторону треугольника">
+          <button class="side-card up" type="button" data-side="up" aria-pressed="false">
+            <span class="dot" aria-hidden="true"></span><b>Подъём</b><span class="dist" id="up-value">3 м</span>
+            <small>Катет напротив выбранного угла. Его называют противолежащим.</small>
+          </button>
+          <button class="side-card along" type="button" data-side="along" aria-pressed="false">
+            <span class="dot" aria-hidden="true"></span><b>По земле</b><span class="dist" id="along-value">4 м</span>
+            <small>Катет рядом с выбранным углом. Его называют прилежащим.</small>
+          </button>
+          <button class="side-card slope" type="button" data-side="slope" aria-pressed="false">
+            <span class="dot" aria-hidden="true"></span><b>Горка</b><span class="dist" id="slope-value">5 м</span>
+            <small>Наклонная сторона напротив 90°. Она самая длинная и называется гипотенузой.</small>
+          </button>
+        </div>
+        <p class="tip"><strong>Подвигай ползунок.</strong> Сравни 30° и 60°. Горка всё время длиной 5 метров. Что происходит с подъёмом и расстоянием по земле?</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="lesson" id="ratios" aria-labelledby="ratios-heading">
+    <div class="lesson-head"><span class="step">Шаг 2</span><h2 id="ratios-heading">Раздели одну длину на другую</h2></div>
+    <p class="lead">Сверху в дроби пишем длину, которую делим. Снизу — длину, на которую делим. Нажми на любое название и посмотри, какие две стороны подсветятся.</p>
+    <div class="ratio-choices" role="group" aria-label="Выбрать деление">
+      <button class="choice" type="button" data-ratio="sin" aria-pressed="true"><b>Синус</b><small>sin</small></button>
+      <button class="choice" type="button" data-ratio="cos" aria-pressed="false"><b>Косинус</b><small>cos</small></button>
+      <button class="choice" type="button" data-ratio="tan" aria-pressed="false"><b>Тангенс</b><small>tg</small></button>
+      <button class="choice" type="button" data-ratio="cot" aria-pressed="false"><b>Котангенс</b><small>ctg</small></button>
+    </div>
+    <div class="ratio-panel">
+      <figure class="ratio-graph">
+        <figcaption>Угол у подножия <span id="ratio-angle">≈ 36,9°</span></figcaption>
+        <div class="graph" id="ratio-graph"></div>
+      </figure>
+      <div class="ratio-copy" id="ratio-copy" aria-live="polite" aria-atomic="true">
+        <h3 id="ratio-title">Синус</h3>
+        <div class="equation" id="equation" role="img" aria-label="Подъём делим на длину горки. Три делим на пять, равно ноль целых шесть десятых."></div>
+        <p id="ratio-meaning"></p>
+        <p id="geometry-terms"></p>
+        <p class="rounding" id="rounding" hidden>Знак ≈ означает «примерно равно». Длины на рисунке тоже могут быть округлены.</p>
+      </div>
+    </div>
+    <div class="ratio-practice">
+      <p><strong>Попробуй.</strong> Выбери тангенс и сравни 30° и 60°. На какой горке на 1 м по земле приходится больше подъёма?</p>
+      <div class="preset-row" role="group" aria-label="Изменить угол у подножия">
+        <button class="pill preset" type="button" data-angle="classic" aria-pressed="true">3–4–5</button>
+        <button class="pill preset" type="button" data-angle="30" aria-pressed="false">30°</button>
+        <button class="pill preset" type="button" data-angle="60" aria-pressed="false">60°</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="lesson" id="size" aria-labelledby="size-heading">
+    <div class="lesson-head"><span class="step">Шаг 3</span><h2 id="size-heading">Что, если горка вдвое больше?</h2></div>
+    <p class="lead">Представь, что построили вторую горку, в точности такой же крутизны, но вдвое больше. Сравни длины на рисунке.</p>
+    <div class="comparison">
+      <div class="comparison-figures">
+        <figure><figcaption>Горка 5 м</figcaption><div class="graph" id="small-graph"></div></figure>
+        <figure><figcaption>Горка 10 м</figcaption><div class="graph" id="large-graph"></div></figure>
+      </div>
+      <div class="comparison-text">
+        <p>У маленькой горки синус <strong>3 ÷ 5 = 0,6</strong>. У большой <strong>6 ÷ 10 = 0,6</strong>. Удвоилось и то, что делим, и то, на что делим. Поэтому ответ тот же.</p>
+        <p><strong>Угол тот же — все четыре дроби те же.</strong> Так мы можем говорить, например, «синус угла 30°», даже если не знаем размер треугольника.</p>
+      </div>
+    </div>
+    <details class="extra">
+      <summary>А если взять верхний угол?</summary>
+      <div class="extra-content">
+        <div class="graph extra-graph" id="switch-graph"></div>
+        <div>
+          <div class="preset-row" role="group" aria-label="Выбрать угол">
+            <button class="pill perspective" type="button" data-point="bottom" aria-pressed="true">Смотрим снизу</button>
+            <button class="pill perspective" type="button" data-point="top" aria-pressed="false">Смотрим сверху</button>
+          </div>
+          <p id="perspective-text" aria-live="polite"></p>
+          <p>Названия катетов зависят от угла, на который мы смотрим. Гипотенуза по-прежнему напротив 90°.</p>
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <section class="lesson" id="quiz" aria-labelledby="quiz-heading">
+    <div class="lesson-head"><span class="step">Шаг 4</span><h2 id="quiz-heading">Проверь себя</h2></div>
+    <div class="quiz">
+      <p class="quiz-meta" id="quiz-progress"></p>
+      <div class="quiz-grid">
+        <h3 id="question"></h3>
+        <div class="graph quiz-graph" id="quiz-graph"></div>
+        <div class="quiz-actions">
+          <div class="options" id="options" role="group" aria-labelledby="question"></div>
+          <p class="feedback" id="feedback" role="status"></p>
+          <button class="next" type="button" id="quiz-next" disabled>Дальше <span aria-hidden="true">→</span></button>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+<footer><div class="wrap"><a href="../../">← Все предметы</a> · <a href="#top">К началу урока ↑</a></div></footer>
+<noscript><p class="wrap">Для ползунка и заданий включи JavaScript в браузере.</p></noscript>
+<script>
+(() => {
+  "use strict";
+
+  const find = (id) => document.getElementById(id);
+  const classicAngle = Math.atan2(3, 4) * 180 / Math.PI;
+  const format = new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 3 });
+  const angleFormat = new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 1 });
+  const sideInfo = {
+    up: { color: "#ad4325", word: "подъём", name: "Подъём", unit: "вверх", term: "противолежащий катет" },
+    along: { color: "#14624f", word: "по земле", name: "По земле", unit: "по земле", term: "прилежащий катет" },
+    slope: { color: "#6443a6", word: "горка", name: "Горка", unit: "по горке", term: "гипотенуза" }
+  };
+  const ratios = {
+    sin: { name: "Синус", sides: ["up", "slope"], base: "на каждый метр по горке" },
+    cos: { name: "Косинус", sides: ["along", "slope"], base: "на каждый метр по горке" },
+    tan: { name: "Тангенс", sides: ["up", "along"], base: "на каждый метр по земле" },
+    cot: { name: "Котангенс", sides: ["along", "up"], base: "на каждый метр подъёма" }
+  };
+
+  let angle = classicAngle;
+  let activeSide = null;
+  let activeRatio = "sin";
+  let perspective = "bottom";
+
+  function radians(degrees) {
+    return degrees * Math.PI / 180;
+  }
+
+  function lengths(degrees, slope = 5) {
+    return { up: slope * Math.sin(radians(degrees)), along: slope * Math.cos(radians(degrees)), slope };
+  }
+
+  function angleLabel(degrees) {
+    return Number.isInteger(degrees) ? `${degrees}°` : `≈ ${angleFormat.format(degrees)}°`;
+  }
+
+  function approx(number, places = 3) {
+    const power = 10 ** places;
+    return Math.abs(number - Math.round(number * power) / power) > 1e-9;
+  }
+
+  function triangle({ id, degrees, size = 5, highlight = [], layout = "main", point = "bottom" }) {
+    const dims = {
+      main: { width: 400, height: 286, x: 61, y: 246, hyp: 213, font: 17, arc: 31, fill: "#f3f8ed", grid: true },
+      ratio: { width: 400, height: 250, x: 62, y: 218, hyp: 184, font: 17, arc: 28, fill: "#f0f5ea" },
+      scale: { width: 290, height: 203, x: 39, y: 165, hyp: size * 22, font: 25, arc: 24, fill: "#f0f5ea" },
+      switch: { width: 290, height: 180, x: 46, y: 145, hyp: 158, font: 18, arc: 27, fill: "#f0f5ea" }
+    };
+    const { width, height, x, y, hyp, font, arc, fill, grid } = dims[layout];
+    const dimensions = lengths(degrees, size);
+    const theta = radians(degrees);
+    const cos = Math.cos(theta);
+    const sin = Math.sin(theta);
+    const right = x + hyp * cos;
+    const top = y - hyp * sin;
+    const angleX = point === "top" ? right : x;
+    const angleY = point === "top" ? top : y;
+    const bottomArc = `M ${x + arc} ${y} A ${arc} ${arc} 0 0 0 ${x + arc * cos} ${y - arc * sin}`;
+    const topArc = `M ${right} ${top + arc} A ${arc} ${arc} 0 0 1 ${right - arc * cos} ${top + arc * sin}`;
+    const sides = [
+      { key: "slope", x1: x, y1: y, x2: right, y2: top, tx: (x + right) / 2 - (layout === "scale" ? 21 : 25) * sin, ty: (y + top) / 2 - 25 * cos, anchor: "middle" },
+      { key: "along", x1: x, y1: y, x2: right, y2: y, tx: (x + right) / 2, ty: y + (layout === "scale" ? 24 : 23), anchor: "middle" },
+      { key: "up", x1: right, y1: y, x2: right, y2: top, tx: right + 12, ty: (y + top) / 2, anchor: "start" }
+    ];
+    const selected = (key) => !highlight.length || highlight.includes(key);
+    const markedAngle = point === "top" ? 90 - degrees : degrees;
+    const sideLabels = sides.map(({ key }) => `${sideInfo[key].name} ${format.format(dimensions[key])} м.`).join(" ");
+    const anglePosition = point === "top" ? "Верхний угол" : "Угол у подножия";
+
+    return `<svg viewBox="0 0 ${width} ${height}" role="img" aria-labelledby="${id}-title ${id}-desc">
+      <title id="${id}-title">Прямоугольный треугольник</title>
+      <desc id="${id}-desc">${anglePosition} ${angleLabel(markedAngle)}. ${sideLabels}${highlight.length ? " Выделено: " + highlight.map((key) => sideInfo[key].word).join(", ") + "." : ""}</desc>
+      ${grid ? `<defs><pattern id="${id}-grid" width="19" height="19" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1" fill="#c6d8c5"/></pattern></defs><rect width="${width}" height="${height}" fill="url(#${id}-grid)"/>` : ""}
+      <path d="M ${x} ${y} L ${right} ${top} L ${right} ${y} Z" fill="#e4ede0"/>
+      <path d="M ${angleX} ${angleY} ${(point === "top" ? topArc : bottomArc).replace("M ", "L ")} Z" fill="#d9c9f1"/>
+      <path d="M ${right - 12} ${y} v -12 h 12" fill="none" stroke="#65776d" stroke-width="1.6"/>
+      ${sides.map(({ key, x1, y1, x2, y2 }) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${selected(key) ? sideInfo[key].color : "#a3b2a5"}" stroke-width="${highlight.length && selected(key) ? 5.5 : 3.6}" stroke-linecap="round"/>`).join("")}
+      <path d="${point === "top" ? topArc : bottomArc}" fill="none" stroke="#59478e" stroke-width="2"/>
+      <circle cx="${angleX}" cy="${angleY}" r="4.3" fill="#59478e" stroke="${fill}" stroke-width="1.3"/>
+      ${sides.map(({ key, tx, ty, anchor }) => `<text class="side-text" x="${tx}" y="${ty}" dominant-baseline="central" text-anchor="${anchor}" font-size="${font}" stroke="${fill}" fill="${selected(key) ? sideInfo[key].color : "#57685f"}">${format.format(dimensions[key])} м</text>`).join("")}
+    </svg>`;
+  }
+
+  function showComparison() {
+    find("small-graph").innerHTML = triangle({ id: "small-picture", degrees: classicAngle, size: 5, layout: "scale" });
+    find("large-graph").innerHTML = triangle({ id: "large-picture", degrees: classicAngle, size: 10, layout: "scale" });
+  }
+
+  function showMain() {
+    const dimensions = lengths(angle);
+    const label = angleLabel(angle);
+    find("angle-value").textContent = label;
+    find("incline").setAttribute("aria-valuetext", label);
+    find("main-graph").innerHTML = triangle({
+      id: "main-picture", degrees: angle, highlight: activeSide ? [activeSide] : []
+    });
+    document.querySelectorAll(".side-card").forEach((button) => {
+      const key = button.dataset.side;
+      button.setAttribute("aria-pressed", key === activeSide);
+      find(`${key}-value`).textContent = `${approx(dimensions[key]) ? "≈ " : ""}${format.format(dimensions[key])} м`;
+    });
+    document.querySelectorAll(".preset").forEach((button) => {
+      const preset = button.dataset.angle === "classic" ? classicAngle : Number(button.dataset.angle);
+      button.setAttribute("aria-pressed", Math.abs(angle - preset) < 1e-8);
+    });
+  }
+
+  function showRatio() {
+    const ratio = ratios[activeRatio];
+    const [first, second] = ratio.sides;
+    const dimensions = lengths(angle);
+    const value = dimensions[first] / dimensions[second];
+    const isApprox = [dimensions[first], dimensions[second], value].some((number) => approx(number));
+    const sign = isApprox ? "≈" : "=";
+    const equal = isApprox ? "примерно равно" : "равно";
+    const [num, den] = [format.format(dimensions[first]), format.format(dimensions[second])];
+    const firstWord = sideInfo[first].word;
+    const secondWord = sideInfo[second].word;
+
+    find("ratio-title").textContent = ratio.name;
+    find("ratio-angle").textContent = angleLabel(angle);
+    find("ratio-graph").innerHTML = triangle({
+      id: "ratio-picture", degrees: angle, highlight: ratio.sides, layout: "ratio"
+    });
+    find("equation").setAttribute("aria-label", `Сверху ${sideInfo[first].term}, снизу ${sideInfo[second].term}. ${num} делим на ${den}, ${equal} ${format.format(value)}.`);
+    find("equation").innerHTML = `
+      <span class="fraction" aria-hidden="true"><span class="word ${first}">${firstWord}</span><span class="word ${second}">${secondWord}</span></span>
+      <span class="equation-part" aria-hidden="true">
+        <span>${sign}</span>
+        <span class="fraction"><span class="word ${first}">${num}</span><span class="word ${second}">${den}</span></span>
+      </span>
+      <span class="equation-part" aria-hidden="true"><span>${sign}</span><span>${format.format(value)}</span></span>`;
+    const centimeters = Math.round(value * 100);
+    const distance = centimeters < 100 ? `${centimeters} см` : `${format.format(centimeters / 100)} м`;
+    const roughly = Math.abs(value * 100 - centimeters) > 1e-9 ? "примерно " : "";
+    const note = activeRatio === "tan" ? " Чем больше подъём на метр по земле, тем круче горка." :
+      activeRatio === "cot" ? " Это тангенс с перевёрнутой дробью." : "";
+    find("ratio-meaning").textContent = `Это значит, что ${ratio.base} приходится ${roughly}${distance} ${sideInfo[first].unit}.${note}`;
+    find("geometry-terms").innerHTML = `В учебнике это запишут так: <strong class="word ${first}">${sideInfo[first].term}</strong> ÷ <strong class="word ${second}">${sideInfo[second].term}</strong>.`;
+    find("rounding").hidden = !isApprox;
+    document.querySelectorAll(".choice").forEach((button) => {
+      button.setAttribute("aria-pressed", button.dataset.ratio === activeRatio);
+    });
+  }
+
+  find("incline").addEventListener("input", (event) => {
+    angle = Number(event.target.value);
+    showMain();
+    showRatio();
+  });
+
+  document.querySelectorAll(".preset").forEach((button) => {
+    button.addEventListener("click", () => {
+      angle = button.dataset.angle === "classic" ? classicAngle : Number(button.dataset.angle);
+      find("incline").value = angle;
+      showMain();
+      showRatio();
+    });
+  });
+
+  document.querySelectorAll(".side-card").forEach((button) => {
+    button.addEventListener("click", () => {
+      activeSide = activeSide === button.dataset.side ? null : button.dataset.side;
+      showMain();
+    });
+  });
+
+  document.querySelectorAll(".choice").forEach((button) => {
+    button.addEventListener("click", () => {
+      activeRatio = button.dataset.ratio;
+      showRatio();
+    });
+  });
+
+  function showPerspective() {
+    const bottom = perspective === "bottom";
+    find("switch-graph").innerHTML = triangle({
+      id: "switch-picture", degrees: classicAngle, highlight: [bottom ? "up" : "along"],
+      layout: "switch", point: perspective
+    });
+    find("perspective-text").innerHTML = bottom
+      ? 'Напротив нижнего угла <strong class="word up">подъём 3 м</strong>. Синус этого угла равен <strong>3 ÷ 5 = 0,6</strong>.'
+      : 'Напротив верхнего угла <strong class="word along">сторона по земле 4 м</strong>. Синус этого угла равен <strong>4 ÷ 5 = 0,8</strong>.';
+    document.querySelectorAll(".perspective").forEach((button) => {
+      button.setAttribute("aria-pressed", button.dataset.point === perspective);
+    });
+  }
+
+  document.querySelectorAll(".perspective").forEach((button) => {
+    button.addEventListener("click", () => {
+      perspective = button.dataset.point;
+      showPerspective();
+    });
+  });
+
+  const questions = [
+    {
+      text: "С чего начнёшь, чтобы найти гипотенузу?",
+      options: ["Найду сторону напротив 90°", "Найду самую короткую сторону", "Найду сторону, которая стоит вертикально"],
+      correct: 0,
+      hint: "Поищи маленький квадратик на рисунке. Он отмечает прямой угол.",
+      explanation: "Да. Сторона напротив прямого угла — гипотенуза. Это наклонная горка."
+    },
+    {
+      text: "Подъём 3 м, по земле 4 м, горка 5 м. Чему равен синус угла у подножия?",
+      options: ["4 ÷ 5", "3 ÷ 4", "3 ÷ 5"],
+      correct: 2,
+      hint: "Для синуса берём катет напротив выбранного угла и делим его на длину горки.",
+      explanation: "Да. Синус — подъём делим на горку. Получается 0,6."
+    },
+    {
+      text: "А какое деление даст косинус того же угла?",
+      options: ["5 ÷ 4", "4 ÷ 5", "3 ÷ 5"],
+      correct: 1,
+      hint: "Для косинуса берём катет рядом с выбранным углом. Снизу в дроби длина горки.",
+      explanation: "Да. Косинус — длину по земле делим на горку. Получается 0,8."
+    },
+    {
+      text: "На горке поднимаемся на 3 м за каждые 4 м по земле. Чему равен тангенс угла у подножия?",
+      options: ["4 ÷ 3", "3 ÷ 5", "3 ÷ 4"],
+      correct: 2,
+      hint: "Тангенс показывает, сколько метров вверх приходится на метр по земле.",
+      explanation: "Да. Подъём делим на длину по земле. Тангенс 0,75 означает 75 см вверх на 1 м по земле."
+    },
+    {
+      text: "Как из дроби для тангенса 3/4 получить котангенс того же угла?",
+      options: ["Перевернуть дробь: 4 ÷ 3", "Оставить как есть: 3 ÷ 4", "Заменить низ на 5: 3 ÷ 5"],
+      correct: 0,
+      hint: "Для котангенса ищем, сколько по земле приходится на метр подъёма. Что будет сверху?",
+      explanation: "Да. Длину по земле делим на подъём, поэтому дробь переворачивается."
+    },
+    {
+      text: "Две горки одинаково крутые. Одна из них в три раза длиннее. Что будет с синусом?",
+      options: ["Станет втрое больше", "Останется тем же", "Станет втрое меньше"],
+      correct: 1,
+      hint: "Подумай, что происходит с дробью, когда верх и низ умножаются на одно число.",
+      explanation: "Да. И подъём, и длина горки выросли втрое. Значение дроби осталось прежним."
+    }
+  ];
+
+  let questionIndex = 0;
+  let answered = false;
+
+  function showQuestion() {
+    const question = questions[questionIndex];
+    const next = find("quiz-next");
+    find("options").replaceChildren();
+    find("feedback").textContent = "";
+    delete find("feedback").dataset.result;
+    find("quiz-graph").hidden = questionIndex >= questions.length - 1;
+    answered = false;
+    if (!question) {
+      find("quiz-progress").textContent = `Пройдено ${questions.length} из ${questions.length}`;
+      find("question").textContent = "Ты разобрался с четырьмя дробями!";
+      find("feedback").textContent = "Попробуй объяснить кому-нибудь, почему у маленькой и большой горок с одинаковым наклоном совпадает синус.";
+      next.textContent = "Пройти ещё раз";
+      next.disabled = false;
+      return;
+    }
+    find("quiz-progress").textContent = `Вопрос ${questionIndex + 1} из ${questions.length}`;
+    find("question").textContent = question.text;
+    next.textContent = questionIndex === questions.length - 1 ? "Завершить" : "Дальше →";
+    next.disabled = true;
+    question.options.forEach((option, index) => {
+      const button = document.createElement("button");
+      button.className = "option";
+      button.type = "button";
+      button.textContent = option;
+      button.addEventListener("click", () => {
+        if (answered) return;
+        const correct = question.correct === index;
+        const result = correct ? "right" : "wrong";
+        find("options").querySelectorAll("button").forEach((candidate) => {
+          delete candidate.dataset.result;
+          if (correct) candidate.setAttribute("aria-disabled", "true");
+        });
+        button.dataset.result = result;
+        const feedback = find("feedback");
+        feedback.dataset.result = result;
+        feedback.textContent = correct ? question.explanation : question.hint;
+        answered = correct;
+        next.disabled = !correct;
+      });
+      find("options").append(button);
+    });
+  }
+
+  find("quiz-next").addEventListener("click", () => {
+    questionIndex = questionIndex === questions.length ? 0 : questionIndex + 1;
+    showQuestion();
+    (find("options").querySelector("button") || find("quiz-next")).focus();
+  });
+
+  showMain();
+  showRatio();
+  showComparison();
+  showPerspective();
+  find("quiz-graph").innerHTML = triangle({ id: "quiz-picture", degrees: classicAngle, layout: "switch" });
+  showQuestion();
+})();
+</script>
+</body>
+</html>
